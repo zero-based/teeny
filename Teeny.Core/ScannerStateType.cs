@@ -4,7 +4,7 @@
     {
         // Scan States
         ScanAlphanumeric,
-        ScanOperator,
+        ScanSymbol,
         ScanWhitespace,
         ScanNumber,
 

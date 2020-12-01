@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Teeny.Core
 {
@@ -31,8 +32,8 @@ namespace Teeny.Core
                 StateType = ScannerStateType.ScanAlphanumeric;
             else if (char.IsWhiteSpace(currentChar))
                 StateType = ScannerStateType.ScanWhitespace;
-            else if (char.IsSymbol(currentChar))
-                StateType = ScannerStateType.ScanOperator;
+            else if (Regex.IsMatch(currentChar.ToString(), @"[^\w\d\s]"))
+                StateType = ScannerStateType.ScanSymbol;
             else
                 StateType = ScannerStateType.Unknown;
 
