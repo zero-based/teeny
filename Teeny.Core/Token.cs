@@ -1,52 +1,56 @@
-﻿namespace Teeny.Core
+﻿using Teeny.Core.Attributes;
+
+namespace Teeny.Core
 {
     public enum Token
     {
-        DataTypeInt,
-        DataTypeFloat,
-        DataTypeString,
+        [PatternToken(@"^\/\*.*\*\/$")] Comment,
+        [PatternToken(@"^\s+$")] Whitespace,
 
-        StatementRead,
-        StatementWrite,
+        [PatternToken(@"^[a-zA-Z]([a-zA-Z0-9])*$")] Identifier,
+        [PatternToken(@"^(\+|-)?[0-9]+(\.[0-9]+)?$")] ConstantNumber,
+        [PatternToken(@"^"".*""$")] ConstantString,
 
-        StatementRepeat,
-        StatementUntil,
+        [ConstantToken("int")] DataTypeInt,
+        [ConstantToken("float")] DataTypeFloat,
+        [ConstantToken("string")] DataTypeString,
 
-        StatementIf,
-        StatementElseIf,
-        StatementElse,
-        StatementThen,
+        [ConstantToken("read")] StatementRead,
+        [ConstantToken("write")] StatementWrite,
 
-        StatementReturn,
-        ConstantEndl,
+        [ConstantToken("repeat")] StatementRepeat,
+        [ConstantToken("until")] StatementUntil,
 
-        SymbolSemicolon,
-        SymbolComma,
+        [ConstantToken("if")] StatementIf,
+        [ConstantToken("elseif")] StatementElseIf,
+        [ConstantToken("else")] StatementElse,
+        [ConstantToken("then")] StatementThen,
 
-        Identifier,
+        [ConstantToken("return")] StatementReturn,
+        [ConstantToken("endl")] ConstantEndl,
 
-        ConstantString,
-        ConstantNumber,
+        [ConstantToken(";")] SymbolSemicolon,
+        [ConstantToken(",")] SymbolComma,
 
-        OperatorArithmeticPlus,
-        OperatorArithmeticMinus,
-        OperatorArithmeticMultiply,
-        OperatorArithmeticDivide,
+        [ConstantToken("+")] OperatorArithmeticPlus,
+        [ConstantToken("-")] OperatorArithmeticMinus,
+        [ConstantToken("*")] OperatorArithmeticMultiply,
+        [ConstantToken("/")] OperatorArithmeticDivide,
 
-        OperatorConditionalGreaterThan,
-        OperatorConditionalLessThan,
-        OperatorConditionalEqual,
-        OperatorConditionalNotEqual,
+        [ConstantToken(">")] OperatorConditionalGreaterThan,
+        [ConstantToken("<")] OperatorConditionalLessThan,
+        [ConstantToken("=")] OperatorConditionalEqual,
+        [ConstantToken("<>")] OperatorConditionalNotEqual,
 
-        OperatorBooleanAnd,
-        OperatorBooleanOr,
+        [ConstantToken("&&")] OperatorBooleanAnd,
+        [ConstantToken("||")] OperatorBooleanOr,
 
-        OperatorAssignment,
+        [ConstantToken(":=")] OperatorAssignment,
 
-        CurlyBracketLeft,
-        CurlyBracketRight,
+        [ConstantToken("{")] CurlyBracketLeft,
+        [ConstantToken("}")] CurlyBracketRight,
 
-        ParenthesisLeft,
-        ParenthesisRight
+        [ConstantToken("(")] ParenthesisLeft,
+        [ConstantToken(")")] ParenthesisRight
     }
 }
