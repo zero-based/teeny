@@ -9,13 +9,17 @@ namespace Teeny.Core
 
         public List<TokenRecord> Scan(string sourceCode)
         {
-            // TODO: Preprocess source code here
+
             var state = new ScannerState
             {
                 OnStateChanged = OnStateChanged
             };
 
-            foreach (var currentChar in sourceCode)
+            // TODO: Move preprocessing to `Compiler` class
+            var preprocessor = new Preprocessor(); 
+            var processedCode = preprocessor.Preprocess(sourceCode);
+
+            foreach (var currentChar in processedCode)
             {
                 state.Update(currentChar);
             }
