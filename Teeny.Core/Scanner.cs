@@ -21,18 +21,17 @@ namespace Teeny.Core
 
         public List<TokenRecord> Scan(string sourceCode)
         {
-            // TODO: Preprocess source code here
-            var state = new ScannerState
-            {
-                OnStateChanged = OnStateChanged
-            };
+            var state = new ScannerState {OnStateChanged = OnStateChanged, StateType = ScannerStateType.Unknown};
 
-            foreach (var currentChar in sourceCode)
+            for (var i = 0; i < sourceCode.Length; i++)
             {
-                state.Update(currentChar);
+                var currentChar = sourceCode[i];
+                var nextChar = i + 1 <= sourceCode.Length - 1 ? sourceCode[i + 1] : char.MinValue;
+                var previousChar = i - 1 >= 0 ? sourceCode[i - 1] : char.MinValue;
+                var scanFrame = $"{previousChar}{currentChar}{nextChar}";
+                state.Update(scanFrame);
             }
 
-            state.StateType = ScannerStateType.Unknown;
 
             return TokensTable;
         }
