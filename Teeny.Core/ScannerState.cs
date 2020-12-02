@@ -53,7 +53,7 @@ namespace Teeny.Core
                 return;
             }
 
-            if (char.IsDigit(scanFrame[1]))
+            if (char.IsDigit(scanFrame[1]) || scanFrame[1] == '.')
                 StateType = ScannerStateType.ScanNumber;
             else if (char.IsLetterOrDigit(scanFrame[1]))
                 StateType = ScannerStateType.ScanAlphanumeric;
