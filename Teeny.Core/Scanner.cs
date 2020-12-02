@@ -36,9 +36,16 @@ namespace Teeny.Core
                 state.Update(scanFrame);
             }
 
-            state.StateType = ScannerStateType.ScanEnd;
-
-            return TokensTable;
+            switch (state.StateType)
+            {
+                case ScannerStateType.StringStart:
+                    throw new Exception("Unclosed String");
+                case ScannerStateType.CommentStart:
+                    throw new Exception("Unclosed Comment");
+                default:
+                    state.StateType = ScannerStateType.ScanEnd;
+                    return TokensTable;
+            }
         }
 
         private void OnStateChanged(StringBuilder lexeme)
