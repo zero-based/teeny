@@ -21,7 +21,11 @@ namespace Teeny.Core
 
         public List<TokenRecord> Scan(string sourceCode)
         {
-            var state = new ScannerState {OnStateChanged = OnStateChanged, StateType = ScannerStateType.Unknown};
+            var state = new ScannerState
+            {
+                OnStateChanged = OnStateChanged,
+                StateType = ScannerStateType.ScanStart
+            };
 
             for (var i = 0; i < sourceCode.Length; i++)
             {
@@ -32,6 +36,7 @@ namespace Teeny.Core
                 state.Update(scanFrame);
             }
 
+            state.StateType = ScannerStateType.ScanEnd;
 
             return TokensTable;
         }

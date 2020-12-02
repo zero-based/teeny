@@ -4,13 +4,14 @@ namespace Teeny.Core
 {
     public enum ScannerStateType
     {
-        // Scan States
+        ScanStart,
+        ScanEnd,
+
         ScanAlphanumeric,
         ScanSymbol,
         ScanWhitespace,
         ScanNumber,
 
-        // Meta States
         [UpdateableBy(CommentEnd)] CommentStart,
         CommentEnd,
 
