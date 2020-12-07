@@ -4,9 +4,6 @@ namespace Teeny.Core
 {
     public enum Token
     {
-        [PatternToken(@"^\/\*.*\*\/$")] Comment,
-        [PatternToken(@"^\s+$")] Whitespace,
-
         [PatternToken(@"^[a-zA-Z]([a-zA-Z0-9])*$")] Identifier,
         [PatternToken(@"^(\+|-)?[0-9]+(\.[0-9]+)?$")] ConstantNumber,
         [PatternToken(@"^"".*""$")] ConstantString,

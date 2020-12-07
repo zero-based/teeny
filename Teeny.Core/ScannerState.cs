@@ -20,6 +20,7 @@ namespace Teeny.Core
                 var hasPermission = attribute == null || attribute.UpdatingStateType == value;
 
                 if (_stateType == value || !hasPermission) return;
+
                 OnStateChanged(Lexeme);
                 Lexeme.Clear();
                 _stateType = value;
@@ -47,13 +48,9 @@ namespace Teeny.Core
             if (scanFrame.Substring(1, 2) == "/*")
                 StateType = ScannerStateType.CommentStart;
             else if (scanFrame.Substring(0, 2) == "*/")
-            {
-                Lexeme.Append('/');
-                StateType = ScannerStateType.CommentEnd;
-                return;
-            }
 
-            if (char.IsDigit(scanFrame[1]) || scanFrame[1] == '.')
+                StateType = ScannerStateType.CommentEnd;
+            else if (char.IsDigit(scanFrame[1]) || scanFrame[1] == '.')
                 StateType = ScannerStateType.ScanNumber;
             else if (char.IsLetterOrDigit(scanFrame[1]))
                 StateType = ScannerStateType.ScanAlphanumeric;
@@ -63,6 +60,9 @@ namespace Teeny.Core
                 StateType = ScannerStateType.ScanSymbol;
             else
                 StateType = ScannerStateType.Unknown;
+
+            var isConsumable = _stateType.GetAttributeOfType<ConsumableAttribute>() != null;
+            if (isConsumable) return;
 
             Lexeme.Append(scanFrame[1]);
         }

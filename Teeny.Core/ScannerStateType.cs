@@ -9,11 +9,12 @@ namespace Teeny.Core
 
         ScanAlphanumeric,
         ScanSymbol,
-        ScanWhitespace,
+
+        [Consumable] ScanWhitespace,
         ScanNumber,
 
-        [UpdateableBy(CommentEnd)] CommentStart,
-        CommentEnd,
+        [Consumable] [UpdateableBy(CommentEnd)] CommentStart,
+        [Consumable] CommentEnd,
 
         [UpdateableBy(StringEnd)] StringStart,
         StringEnd,
