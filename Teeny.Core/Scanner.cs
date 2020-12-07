@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Teeny.Core.Attributes;
+using Teeny.Core.Exceptions;
 
 namespace Teeny.Core
 {
@@ -39,9 +40,9 @@ namespace Teeny.Core
             switch (state.StateType)
             {
                 case ScannerStateType.StringStart:
-                    throw new Exception("Unclosed String");
+                    throw new UnclosedStringException();
                 case ScannerStateType.CommentStart:
-                    throw new Exception("Unclosed Comment");
+                    throw new UnclosedCommentException();
                 default:
                     state.StateType = ScannerStateType.ScanEnd;
                     return TokensTable;
@@ -72,7 +73,7 @@ namespace Teeny.Core
                 if (Regex.IsMatch(lexeme, key)) return value;
             }
 
-            throw new Exception("Unknown Lexeme");
+            throw new UnknownLexemeException(lexeme);
         }
 
         private void BuildLookupTables()
