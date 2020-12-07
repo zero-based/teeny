@@ -21,7 +21,11 @@ namespace Teeny.Core
 
         public List<TokenRecord> Scan(string sourceCode)
         {
-            var state = new ScannerState {OnStateChanged = OnStateChanged, StateType = ScannerStateType.Unknown};
+            var state = new ScannerState
+            {
+                OnStateChanged = OnStateChanged,
+                StateType = ScannerStateType.ScanStart
+            };
 
             for (var i = 0; i < sourceCode.Length; i++)
             {
@@ -32,8 +36,16 @@ namespace Teeny.Core
                 state.Update(scanFrame);
             }
 
-
-            return TokensTable;
+            switch (state.StateType)
+            {
+                case ScannerStateType.StringStart:
+                    throw new Exception("Unclosed String");
+                case ScannerStateType.CommentStart:
+                    throw new Exception("Unclosed Comment");
+                default:
+                    state.StateType = ScannerStateType.ScanEnd;
+                    return TokensTable;
+            }
         }
 
         private void OnStateChanged(StringBuilder lexeme)
