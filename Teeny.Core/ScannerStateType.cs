@@ -11,7 +11,6 @@ namespace Teeny.Core
         ScanSymbol,
 
         [Consumable] ScanWhitespace,
-        ScanNumber,
 
         [Consumable] [UpdateableBy(CommentEnd)] CommentStart,
         [Consumable] CommentEnd,

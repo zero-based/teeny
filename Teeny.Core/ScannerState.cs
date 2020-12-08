@@ -48,11 +48,8 @@ namespace Teeny.Core
             if (scanFrame.Substring(1, 2) == "/*")
                 StateType = ScannerStateType.CommentStart;
             else if (scanFrame.Substring(0, 2) == "*/")
-
                 StateType = ScannerStateType.CommentEnd;
-            else if (char.IsDigit(scanFrame[1]) || scanFrame[1] == '.')
-                StateType = ScannerStateType.ScanNumber;
-            else if (char.IsLetterOrDigit(scanFrame[1]))
+            else if (char.IsLetterOrDigit(scanFrame[1]) || scanFrame[1] == '.')
                 StateType = ScannerStateType.ScanAlphanumeric;
             else if (char.IsWhiteSpace(scanFrame[1]))
                 StateType = ScannerStateType.ScanWhitespace;
