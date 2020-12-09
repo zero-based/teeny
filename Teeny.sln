@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Teeny.Core", "Teeny.Core\Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Teeny.Core.Tests", "Teeny.Core.Tests\Teeny.Core.Tests.csproj", "{5E9C9AB8-8E53-4A45-88F5-377B35975F05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teeny.UI", "Teeny.UI\Teeny.UI.csproj", "{B5C8AC32-F95B-4E85-9940-34754CFAE75D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Teeny.UI", "Teeny.UI\Teeny.UI.csproj", "{A537B9FD-1E9E-4EE8-BBD0-30621A2D2C73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{5E9C9AB8-8E53-4A45-88F5-377B35975F05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5E9C9AB8-8E53-4A45-88F5-377B35975F05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5E9C9AB8-8E53-4A45-88F5-377B35975F05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B5C8AC32-F95B-4E85-9940-34754CFAE75D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B5C8AC32-F95B-4E85-9940-34754CFAE75D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B5C8AC32-F95B-4E85-9940-34754CFAE75D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B5C8AC32-F95B-4E85-9940-34754CFAE75D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A537B9FD-1E9E-4EE8-BBD0-30621A2D2C73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A537B9FD-1E9E-4EE8-BBD0-30621A2D2C73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A537B9FD-1E9E-4EE8-BBD0-30621A2D2C73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A537B9FD-1E9E-4EE8-BBD0-30621A2D2C73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
