@@ -2,7 +2,7 @@
 
 namespace Teeny.Core.Attributes
 {
-    public class ConsumableAttribute : Attribute
+    public class StreamAttribute : Attribute
     {
     }
 }

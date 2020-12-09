@@ -39,9 +39,9 @@ namespace Teeny.Core
 
             switch (state.StateType)
             {
-                case ScannerStateType.StringStart:
+                case ScannerStateType.ScanString:
                     throw new UnclosedStringException();
-                case ScannerStateType.CommentStart:
+                case ScannerStateType.ScanComment:
                     throw new UnclosedCommentException();
                 default:
                     state.StateType = ScannerStateType.ScanEnd;
@@ -51,7 +51,6 @@ namespace Teeny.Core
 
         private void OnStateChanged(StringBuilder lexeme)
         {
-            if (lexeme.Length == 0) return;
             var lexemeStr = lexeme.ToString();
             var token = Tokenize(lexemeStr);
             var record = new TokenRecord

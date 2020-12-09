@@ -4,20 +4,24 @@ namespace Teeny.Core
 {
     public enum ScannerStateType
     {
+        [NonNotifiable]
         ScanStart,
         ScanEnd,
 
         ScanAlphanumeric,
         ScanSymbol,
 
-        [Consumable] ScanWhitespace,
+        [NonNotifiable]
+        ScanWhitespace,
 
-        [Consumable] [UpdateableBy(CommentEnd)] CommentStart,
-        [Consumable] CommentEnd,
+        [Stream]
+        [NonNotifiable]
+        ScanComment,
 
-        [UpdateableBy(StringEnd)] StringStart,
-        StringEnd,
+        [Stream]
+        ScanString,
 
+        CloseStream,
         Unknown
     }
 }
