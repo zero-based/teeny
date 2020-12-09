@@ -30,11 +30,8 @@ namespace Teeny.Core
 
             for (var i = 0; i < sourceCode.Length; i++)
             {
-                var currentChar = sourceCode[i];
-                var nextChar = i + 1 <= sourceCode.Length - 1 ? sourceCode[i + 1] : char.MinValue;
-                var previousChar = i - 1 >= 0 ? sourceCode[i - 1] : char.MinValue;
-                var scanFrame = $"{previousChar}{currentChar}{nextChar}";
-                state.Update(scanFrame);
+                var frame = new ScanFrame(sourceCode, i);
+                state.Update(frame);
             }
 
             switch (state.StateType)
