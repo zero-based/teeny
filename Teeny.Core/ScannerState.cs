@@ -7,7 +7,7 @@ namespace Teeny.Core
 {
     public class ScannerState
     {
-        public StringBuilder Lexeme { get; set; } = new StringBuilder();
+        private StringBuilder Lexeme { get; } = new StringBuilder();
 
         private ScannerStateType _stateType = ScannerStateType.Unknown;
 
@@ -16,14 +16,15 @@ namespace Teeny.Core
             get => _stateType;
             set
             {
-                var attribute = _stateType.GetAttributeOfType<UpdateableByAttribute>();
-                var hasPermission = attribute == null || attribute.UpdatingStateType == value;
+                if (_stateType == value) return;
 
-                if (_stateType == value || !hasPermission) return;
+                // Notify for change if the state is notifiable and there's a lexeme to notify for
+                var isNotifiable = _stateType.GetAttributeOfType<NonNotifiableAttribute>() == null;
+                if (isNotifiable && Lexeme.Length > 0) OnStateChanged(Lexeme); 
 
-                OnStateChanged(Lexeme);
-                Lexeme.Clear();
+                // Update type and start a new lexeme
                 _stateType = value;
+                Lexeme.Clear();
             }
         }
 
@@ -31,37 +32,41 @@ namespace Teeny.Core
 
         public void Update(string scanFrame)
         {
-
-            if (scanFrame[1] == '\"')
+            var isStream = _stateType.GetAttributeOfType<StreamAttribute>() != null;
+            if (isStream)
             {
+                Lexeme.Append(scanFrame[1]);
 
-                if (StateType != ScannerStateType.StringStart)
-                    StateType = ScannerStateType.StringStart;
-                else
+                // Close stream if it's eligible for closure
+                if (StateType == ScannerStateType.ScanString  && scanFrame[1] == '\"' ||
+                    StateType == ScannerStateType.ScanComment && scanFrame.Substring(0, 2) == "*/")
                 {
-                    Lexeme.Append('"');
-                    StateType = ScannerStateType.StringEnd;
-                    return;
+                    StateType = ScannerStateType.CloseStream;
                 }
+
+                return;
             }
 
-            if (scanFrame.Substring(1, 2) == "/*")
-                StateType = ScannerStateType.CommentStart;
-            else if (scanFrame.Substring(0, 2) == "*/")
-                StateType = ScannerStateType.CommentEnd;
-            else if (char.IsLetterOrDigit(scanFrame[1]) || scanFrame[1] == '.')
-                StateType = ScannerStateType.ScanAlphanumeric;
-            else if (char.IsWhiteSpace(scanFrame[1]))
-                StateType = ScannerStateType.ScanWhitespace;
-            else if (Regex.IsMatch(scanFrame[1].ToString(), @"[^\w\d\s]"))
-                StateType = ScannerStateType.ScanSymbol;
-            else
-                StateType = ScannerStateType.Unknown;
-
-            var isConsumable = _stateType.GetAttributeOfType<ConsumableAttribute>() != null;
-            if (isConsumable) return;
-
+            StateType = GetStateType(scanFrame);
             Lexeme.Append(scanFrame[1]);
+        }
+
+        private static ScannerStateType GetStateType(string scanFrame)
+        {
+            var stateType = ScannerStateType.Unknown;
+
+            if (scanFrame[1] == '\"')
+                stateType = ScannerStateType.ScanString;
+            else if (scanFrame.Substring(1, 2) == "/*")
+                stateType = ScannerStateType.ScanComment;
+            else if (char.IsLetterOrDigit(scanFrame[1]) || scanFrame[1] == '.')
+                stateType = ScannerStateType.ScanAlphanumeric;
+            else if (char.IsWhiteSpace(scanFrame[1]))
+                stateType =  ScannerStateType.ScanWhitespace;
+            else if (Regex.IsMatch(scanFrame[1].ToString(), @"[^\w\d\s]"))
+                stateType = ScannerStateType.ScanSymbol;
+
+            return stateType;
         }
     }
 }
