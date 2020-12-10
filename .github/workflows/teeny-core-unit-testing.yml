@@ -1,0 +1,22 @@
+name: Teeny.Core Unit Testing
+
+on:
+  pull_request:
+    paths: 
+      - 'Teeny.Core/**'
+      - 'Teeny.Core.Tests/**'
+    branches: [ master ]
+
+jobs:
+  test:
+    name: Teeny.Core Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.301
+    - name: Run Teeny.Core Unit Tests
+      run: dotnet test Teeny.Core.Tests
