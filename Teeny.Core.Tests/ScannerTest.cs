@@ -212,7 +212,7 @@ namespace Teeny.Core.Tests
                 new TokenRecord {Lexeme = "write", Token= Token.StatementWrite},
                 new TokenRecord {Lexeme = "endl", Token= Token.ConstantEndl},
                 new TokenRecord {Lexeme = ";", Token= Token.SymbolSemicolon},
-                // new TokenRecord {Lexeme = "end", Token= Token.end},
+                new TokenRecord {Lexeme = "end", Token= Token.StatementEnd},
                 new TokenRecord {Lexeme = "return", Token= Token.StatementReturn},
                 new TokenRecord {Lexeme = "0", Token= Token.ConstantNumber},
                 new TokenRecord {Lexeme = ";", Token= Token.SymbolSemicolon},

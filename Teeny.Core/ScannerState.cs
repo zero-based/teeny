@@ -63,6 +63,10 @@ namespace Teeny.Core
                 stateType = ScannerStateType.ScanAlphanumeric;
             else if (char.IsWhiteSpace(scanFrame[1]))
                 stateType =  ScannerStateType.ScanWhitespace;
+            else if (scanFrame[1] == '(' || scanFrame[1] == '{' || scanFrame[1] == '[')
+                stateType = ScannerStateType.ScanOpenedBracket;
+            else if (scanFrame[1] == ')' || scanFrame[1] == '}' || scanFrame[1] == ']')
+                stateType = ScannerStateType.ScanClosedBracket;
             else if (Regex.IsMatch(scanFrame[1].ToString(), @"[^\w\d\s]"))
                 stateType = ScannerStateType.ScanSymbol;
 
