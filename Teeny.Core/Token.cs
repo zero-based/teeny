@@ -22,6 +22,7 @@ namespace Teeny.Core
         [ConstantToken("elseif")] StatementElseIf,
         [ConstantToken("else")] StatementElse,
         [ConstantToken("then")] StatementThen,
+        [ConstantToken("end")] StatementEnd,
 
         [ConstantToken("return")] StatementReturn,
         [ConstantToken("endl")] ConstantEndl,

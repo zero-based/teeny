@@ -11,6 +11,9 @@ namespace Teeny.Core
         ScanAlphanumeric,
         ScanSymbol,
 
+        ScanOpenedBracket,
+        ScanClosedBracket,
+
         [NonNotifiable]
         ScanWhitespace,
 
