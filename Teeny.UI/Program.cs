@@ -1,41 +1,38 @@
 ﻿using ConsoleTables;
 using System;
-using System.Collections.Generic;
 using System.Text;
 using Teeny.Core;
 
 namespace Teeny.UI
 {
-
-    class Program
+    internal static class Program
     {
-        private static bool keepRunning = true;
-         
-        static void Main(string[] args)
+        private static bool _keepReading = true;
+
+        private static void Main(string[] args)
         {
-            StringBuilder code = new StringBuilder();
-            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
+            Console.CancelKeyPress += (sender, eventArgs) =>
             {
-                e.Cancel = true;
-                Program.keepRunning = false;
+                eventArgs.Cancel = true;
+                _keepReading = false;
             };
 
-            Console.WriteLine("Enter input:");
-            while (Program.keepRunning)
-            {
-                string  newline = Console.ReadLine();
-                code.Append(newline);
-            }
-            Scanner scanner = new Scanner();
-            List<TokenRecord> scanned = scanner.Scan(code.ToString());
-            Console.WriteLine('\n');
-            ConsoleTable
-                 .From<TokenRecord>(scanned)
-                 .Configure(o => o.NumberAlignment = Alignment.Right)
-                   .Write(Format.Alternative);
+            Console.WriteLine("Enter Tiny Code (press ctrl + c to stop):");
 
-            Console.ReadKey();    
-       
+            var code = new StringBuilder();
+            while (_keepReading)
+            {
+                var line = Console.ReadLine();
+                code.Append(line);
+            }
+
+            var scanner = new Scanner();
+            var tokensTable = scanner.Scan(code.ToString());
+
+            ConsoleTable.From(tokensTable)
+                .Configure(o => o.NumberAlignment = Alignment.Right)
+                .Write(Format.Alternative);
+
         }
     }
 }
