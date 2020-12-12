@@ -7,16 +7,19 @@ namespace Teeny.UI
 {
     internal static class Program
     {
-        private static bool _keepReading = true;
+        private static bool KeepReading { get; set; } = true;
 
-        private static void Main(string[] args)
+        static Program()
         {
             Console.CancelKeyPress += (sender, eventArgs) =>
             {
                 eventArgs.Cancel = true;
-                _keepReading = false;
+                KeepReading = false;
             };
+        }
 
+        private static void Main(string[] args)
+        {
             const string banner = @"
 
                 ████████ ███████ ███████ ███    ██ ██    ██ 
@@ -33,7 +36,7 @@ namespace Teeny.UI
             Console.WriteLine("Enter tiny code (press ctrl + c to stop):");
 
             var code = new StringBuilder();
-            while (_keepReading)
+            while (KeepReading)
             {
                 var line = Console.ReadLine();
                 code.Append(line);
@@ -44,6 +47,7 @@ namespace Teeny.UI
                 var scanner = new Scanner();
                 var tokensTable = scanner.Scan(code.ToString());
 
+                Console.WriteLine();
                 ConsoleTable.From(tokensTable)
                     .Write(Format.Alternative);
             }
