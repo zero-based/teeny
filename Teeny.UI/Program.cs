@@ -17,7 +17,20 @@ namespace Teeny.UI
                 _keepReading = false;
             };
 
-            Console.WriteLine("Enter Tiny Code (press ctrl + c to stop):");
+            const string banner = @"
+
+                ████████ ███████ ███████ ███    ██ ██    ██ 
+                   ██    ██      ██      ████   ██  ██  ██  
+                   ██    █████   █████   ██ ██  ██   ████   
+                   ██    ██      ██      ██  ██ ██    ██    
+                   ██    ███████ ███████ ██   ████    ██    
+
+                 a   t e e n y   t i n y   c o m p i l e r
+
+            ";
+
+            Console.WriteLine(banner);
+            Console.WriteLine("Enter tiny code (press ctrl + c to stop):");
 
             var code = new StringBuilder();
             while (_keepReading)
