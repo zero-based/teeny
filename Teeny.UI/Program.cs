@@ -39,12 +39,21 @@ namespace Teeny.UI
                 code.Append(line);
             }
 
-            var scanner = new Scanner();
-            var tokensTable = scanner.Scan(code.ToString());
+            try
+            {
+                var scanner = new Scanner();
+                var tokensTable = scanner.Scan(code.ToString());
 
-            ConsoleTable.From(tokensTable)
-                .Configure(o => o.NumberAlignment = Alignment.Right)
-                .Write(Format.Alternative);
+                ConsoleTable.From(tokensTable)
+                    .Write(Format.Alternative);
+            }
+            catch (Exception e)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("ERROR:");
+                Console.WriteLine(e.Message);
+                Console.ResetColor();
+            }
 
         }
     }
