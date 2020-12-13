@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using CommandLine;
@@ -15,6 +16,8 @@ namespace Teeny.CLI
     {
         private static void Main(string[] args)
         {
+            Console.Title = Assembly.GetExecutingAssembly().GetName().Name!;
+
             const string banner = @"
 
                 ████████ ███████ ███████ ███    ██ ██    ██ 
