@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 
-namespace Teeny.UI
+namespace Teeny.CLI
 {
     public class Options
     {
