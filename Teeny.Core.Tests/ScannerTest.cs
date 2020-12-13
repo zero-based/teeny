@@ -1,6 +1,7 @@
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
-using Teeny.Core.Exceptions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Teeny.Core.Scan;
+using Teeny.Core.Scan.Exceptions;
 
 namespace Teeny.Core.Tests
 {

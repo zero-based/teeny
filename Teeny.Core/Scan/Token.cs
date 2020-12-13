@@ -1,6 +1,6 @@
-﻿using Teeny.Core.Attributes;
+﻿using Teeny.Core.Scan.Attributes;
 
-namespace Teeny.Core
+namespace Teeny.Core.Scan
 {
     public enum Token
     {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Teeny.Core
+namespace Teeny.Core.Scan
 {
     public class ScanFrame
     {

@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using CommandLine;
 using ConsoleTables;
-using Teeny.Core;
+using Teeny.Core.Scan;
 
 namespace Teeny.CLI
 {

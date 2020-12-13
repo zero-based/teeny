@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Teeny.Core.Attributes;
-using Teeny.Core.Exceptions;
+using Teeny.Core.Scan.Attributes;
+using Teeny.Core.Scan.Exceptions;
 
-namespace Teeny.Core
+namespace Teeny.Core.Scan
 {
     public class Scanner
     {

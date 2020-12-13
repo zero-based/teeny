@@ -1,4 +1,4 @@
-﻿namespace Teeny.Core
+﻿namespace Teeny.Core.Scan
 {
     public class TokenRecord
     {

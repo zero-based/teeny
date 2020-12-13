@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Teeny.Core.Attributes
+namespace Teeny.Core.Scan.Attributes
 {
     public static class AttributesHelper
     {
