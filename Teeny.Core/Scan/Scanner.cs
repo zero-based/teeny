@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using Teeny.Core.Attributes;
-using Teeny.Core.Exceptions;
+using Teeny.Core.Scan.Attributes;
+using Teeny.Core.Scan.Exceptions;
 
-namespace Teeny.Core
+namespace Teeny.Core.Scan
 {
     public class Scanner
     {
-        public List<TokenRecord> TokensTable { get; set; } = new List<TokenRecord>();
+        public Dictionary<string, Token> PatternLookup = new Dictionary<string, Token>();
 
         public Dictionary<string, Token> ReservedWordsLookup = new Dictionary<string, Token>();
-        public Dictionary<string, Token> PatternLookup = new Dictionary<string, Token>();
 
         public Scanner()
         {
             BuildLookupTables();
         }
+
+        public List<TokenRecord> TokensTable { get; set; } = new List<TokenRecord>();
 
         public List<TokenRecord> Scan(string sourceCode)
         {
@@ -30,11 +31,8 @@ namespace Teeny.Core
 
             for (var i = 0; i < sourceCode.Length; i++)
             {
-                var currentChar = sourceCode[i];
-                var nextChar = i + 1 <= sourceCode.Length - 1 ? sourceCode[i + 1] : char.MinValue;
-                var previousChar = i - 1 >= 0 ? sourceCode[i - 1] : char.MinValue;
-                var scanFrame = $"{previousChar}{currentChar}{nextChar}";
-                state.Update(scanFrame);
+                var frame = new ScanFrame(sourceCode, i);
+                state.Update(frame);
             }
 
             switch (state.StateType)
@@ -68,9 +66,8 @@ namespace Teeny.Core
             if (found) return tokenValue;
 
             foreach (var (key, value) in PatternLookup)
-            {
-                if (Regex.IsMatch(lexeme, key)) return value;
-            }
+                if (Regex.IsMatch(lexeme, key))
+                    return value;
 
             throw new UnknownLexemeException(lexeme);
         }
@@ -81,18 +78,11 @@ namespace Teeny.Core
             foreach (var token in tokens)
             {
                 var reservedAttribute = token.GetAttributeOfType<ConstantTokenAttribute>();
-                if (reservedAttribute != null)
-                {
-                    ReservedWordsLookup.Add(reservedAttribute.ReservedWord, token);
-                }
+                if (reservedAttribute != null) ReservedWordsLookup.Add(reservedAttribute.ReservedWord, token);
 
                 var patternAttribute = token.GetAttributeOfType<PatternTokenAttribute>();
-                if (patternAttribute != null)
-                {
-                    PatternLookup.Add(patternAttribute.Pattern, token);
-                }
+                if (patternAttribute != null) PatternLookup.Add(patternAttribute.Pattern, token);
             }
         }
-
     }
 }

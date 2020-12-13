@@ -1,11 +1,14 @@
-﻿using Teeny.Core.Attributes;
+﻿using Teeny.Core.Scan.Attributes;
 
-namespace Teeny.Core
+namespace Teeny.Core.Scan
 {
     public enum Token
     {
-        [PatternToken(@"^[a-zA-Z]([a-zA-Z0-9])*$")] Identifier,
-        [PatternToken(@"^(\+|-)?[0-9]+(\.[0-9]+)?$")] ConstantNumber,
+        [PatternToken(@"^[a-zA-Z]([a-zA-Z0-9])*$")]
+        Identifier,
+
+        [PatternToken(@"^(\+|-)?[0-9]+(\.[0-9]+)?$")]
+        ConstantNumber,
         [PatternToken(@"^"".*""$")] ConstantString,
 
         [ConstantToken("int")] DataTypeInt,

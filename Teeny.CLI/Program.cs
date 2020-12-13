@@ -1,20 +1,23 @@
-﻿using CommandLine;
-using ConsoleTables;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Teeny.Core;
+using CommandLine;
+using ConsoleTables;
+using Teeny.Core.Scan;
 
-namespace Teeny.UI
+namespace Teeny.CLI
 {
     internal static class Program
     {
         private static void Main(string[] args)
         {
+            Console.Title = Assembly.GetExecutingAssembly().GetName().Name!;
+
             const string banner = @"
 
                 ████████ ███████ ███████ ███    ██ ██    ██ 

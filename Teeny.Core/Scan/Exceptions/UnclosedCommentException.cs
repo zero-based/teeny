@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Teeny.Core.Exceptions
+namespace Teeny.Core.Scan.Exceptions
 {
     public class UnclosedCommentException : Exception
     {
