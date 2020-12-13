@@ -10,15 +10,16 @@ namespace Teeny.Core.Scan
 {
     public class Scanner
     {
-        public List<TokenRecord> TokensTable { get; set; } = new List<TokenRecord>();
+        public Dictionary<string, Token> PatternLookup = new Dictionary<string, Token>();
 
         public Dictionary<string, Token> ReservedWordsLookup = new Dictionary<string, Token>();
-        public Dictionary<string, Token> PatternLookup = new Dictionary<string, Token>();
 
         public Scanner()
         {
             BuildLookupTables();
         }
+
+        public List<TokenRecord> TokensTable { get; set; } = new List<TokenRecord>();
 
         public List<TokenRecord> Scan(string sourceCode)
         {
@@ -65,9 +66,8 @@ namespace Teeny.Core.Scan
             if (found) return tokenValue;
 
             foreach (var (key, value) in PatternLookup)
-            {
-                if (Regex.IsMatch(lexeme, key)) return value;
-            }
+                if (Regex.IsMatch(lexeme, key))
+                    return value;
 
             throw new UnknownLexemeException(lexeme);
         }
@@ -78,18 +78,11 @@ namespace Teeny.Core.Scan
             foreach (var token in tokens)
             {
                 var reservedAttribute = token.GetAttributeOfType<ConstantTokenAttribute>();
-                if (reservedAttribute != null)
-                {
-                    ReservedWordsLookup.Add(reservedAttribute.ReservedWord, token);
-                }
+                if (reservedAttribute != null) ReservedWordsLookup.Add(reservedAttribute.ReservedWord, token);
 
                 var patternAttribute = token.GetAttributeOfType<PatternTokenAttribute>();
-                if (patternAttribute != null)
-                {
-                    PatternLookup.Add(patternAttribute.Pattern, token);
-                }
+                if (patternAttribute != null) PatternLookup.Add(patternAttribute.Pattern, token);
             }
         }
-
     }
 }

@@ -7,9 +7,8 @@ namespace Teeny.Core.Scan
 {
     public class ScannerState
     {
-        private StringBuilder Lexeme { get; } = new StringBuilder();
-
         private ScannerStateType _stateType = ScannerStateType.Unknown;
+        private StringBuilder Lexeme { get; } = new StringBuilder();
 
         public ScannerStateType StateType
         {
@@ -20,7 +19,7 @@ namespace Teeny.Core.Scan
 
                 // Notify for change if the state is notifiable and there's a lexeme to notify for
                 var isNotifiable = _stateType.GetAttributeOfType<NonNotifiableAttribute>() == null;
-                if (isNotifiable && Lexeme.Length > 0) OnStateChanged(Lexeme); 
+                if (isNotifiable && Lexeme.Length > 0) OnStateChanged(Lexeme);
 
                 // Update type and start a new lexeme
                 _stateType = value;
@@ -38,11 +37,9 @@ namespace Teeny.Core.Scan
                 Lexeme.Append(frame.Center);
 
                 // Close stream if it's eligible for closure
-                if (StateType == ScannerStateType.ScanString  && frame.Center == '"' ||
+                if (StateType == ScannerStateType.ScanString && frame.Center == '"' ||
                     StateType == ScannerStateType.ScanComment && frame.Center == '/' && frame.LookBack == '*')
-                {
                     StateType = ScannerStateType.CloseStream;
-                }
 
                 return;
             }
@@ -62,7 +59,7 @@ namespace Teeny.Core.Scan
             else if (char.IsLetterOrDigit(frame.Center) || frame.Center == '.')
                 stateType = ScannerStateType.ScanAlphanumeric;
             else if (char.IsWhiteSpace(frame.Center))
-                stateType =  ScannerStateType.ScanWhitespace;
+                stateType = ScannerStateType.ScanWhitespace;
             else if (frame.Center == '(' || frame.Center == '{' || frame.Center == '[')
                 stateType = ScannerStateType.ScanOpenedBracket;
             else if (frame.Center == ')' || frame.Center == '}' || frame.Center == ']')

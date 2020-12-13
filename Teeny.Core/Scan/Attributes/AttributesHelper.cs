@@ -9,7 +9,7 @@ namespace Teeny.Core.Scan.Attributes
             var type = enumValue.GetType();
             var memInfo = type.GetMember(enumValue.ToString());
             var attributes = memInfo[0].GetCustomAttributes(typeof(T), false);
-            return (attributes.Length > 0) ? (T)attributes[0] : null;
+            return attributes.Length > 0 ? (T) attributes[0] : null;
         }
     }
 }
