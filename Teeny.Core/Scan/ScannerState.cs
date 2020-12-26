@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Text.RegularExpressions;
 using Teeny.Core.Scan.Attributes;
@@ -19,7 +19,8 @@ namespace Teeny.Core.Scan
 
                 // Notify for change if the state is notifiable and there's a lexeme to notify for
                 var isNotifiable = _stateType.GetAttributeOfType<NonNotifiableAttribute>() == null;
-                if (isNotifiable && Lexeme.Length > 0) OnStateChanged(Lexeme);
+                if (isNotifiable && Lexeme.Length > 0 ||
+                    !isNotifiable && value == ScannerStateType.ScanEnd) OnStateChanged(Lexeme);
 
                 // Update type and start a new lexeme
                 _stateType = value;
