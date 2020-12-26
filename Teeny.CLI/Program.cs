@@ -50,16 +50,10 @@ namespace Teeny.CLI
 
         private static void RunWithOptions(Options opts)
         {
-            try
-            {
                 var code = ReadWithOptions(opts);
                 var tokensTable = ScanWithOptions(code, opts);
                 Debug.WriteLine(tokensTable);
-            }
-            catch (Exception e)
-            {
-                LogError(e.Message);
-            }
+            
         }
 
         private static string ReadWithOptions(Options opts)
@@ -86,15 +80,19 @@ namespace Teeny.CLI
         private static IEnumerable<TokenRecord> ScanWithOptions(string code, Options opts)
         {
             var scanner = new Scanner();
-            var tokensTable = scanner.Scan(code);
+            scanner.Scan(code);
 
-            if (opts.Silent) return tokensTable;
+            if (opts.Silent) return scanner.TokensTable;
 
             Console.WriteLine();
-            ConsoleTable.From(tokensTable)
+            ConsoleTable.From(scanner.TokensTable)
                 .Write(Format.Alternative);
 
-            return tokensTable;
+
+            Console.WriteLine();
+            LogError(scanner.ErrorTable);
+
+            return scanner.TokensTable;
         }
 
         private static string ReadUserInput()
@@ -134,10 +132,16 @@ namespace Teeny.CLI
             }
         }
 
-        private static void LogError(string message)
+        private static void LogError(List<ErrorRecord> errorsTable)
         {
+            if (errorsTable.Count==0) return;
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"ERROR: {message}");
+            Console.WriteLine("Errors List:");
+            Console.WriteLine();
+
+            ConsoleTable.From(errorsTable)
+                .Write(Format.Alternative);
+
             Console.ResetColor();
         }
     }
