@@ -86,15 +86,22 @@ namespace Teeny.CLI
         private static IEnumerable<TokenRecord> ScanWithOptions(string code, Options opts)
         {
             var scanner = new Scanner();
-            var tokensTable = scanner.Scan(code);
+            scanner.Scan(code);
 
-            if (opts.Silent) return tokensTable;
+            if (opts.Silent) return scanner.TokensTable;
 
             Console.WriteLine();
-            ConsoleTable.From(tokensTable)
+            ConsoleTable.From(scanner.TokensTable)
                 .Write(Format.Alternative);
 
-            return tokensTable;
+            if (scanner.ErrorTable.Count != 0)
+            {
+                Console.WriteLine();
+                ConsoleTable.From(scanner.ErrorTable)
+                    .Write(Format.Alternative);
+            }
+
+            return scanner.TokensTable;
         }
 
         private static string ReadUserInput()
