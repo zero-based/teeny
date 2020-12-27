@@ -17,10 +17,12 @@ namespace Teeny.Core.Scan
             {
                 if (_stateType == value) return;
 
+                // Notifiable states: ScanEnd and any state without NonNotifiableAttribute
+                var hasNonNotifiableAttribute = _stateType.GetAttributeOfType<NonNotifiableAttribute>() != null;
+                var isNotifiable = value == ScannerStateType.ScanEnd || !hasNonNotifiableAttribute;
+                
                 // Notify for change if the state is notifiable and there's a lexeme to notify for
-                var isNotifiable = _stateType.GetAttributeOfType<NonNotifiableAttribute>() == null;
-                if (isNotifiable && Lexeme.Length > 0 ||
-                    !isNotifiable && value == ScannerStateType.ScanEnd) OnStateChanged(Lexeme);
+                if (isNotifiable && Lexeme.Length > 0) OnStateChanged(Lexeme);
 
                 // Update type and start a new lexeme
                 _stateType = value;
