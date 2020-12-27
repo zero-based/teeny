@@ -120,8 +120,8 @@ namespace Teeny.CLI
             {
                 var line = Console.ReadLine();
                 code.Append(line);
+                code.Append("\n");
             }
-
             return code.ToString();
         }
 

@@ -40,7 +40,7 @@ namespace Teeny.Core.Scan
                 Lexeme.Append(frame.Center);
 
                 // Close stream if it's eligible for closure
-                if (StateType == ScannerStateType.ScanString && frame.Center == '"' ||
+                if (StateType == ScannerStateType.ScanString && (frame.Center == '"' || frame.Center == '\n') ||
                     StateType == ScannerStateType.ScanComment && frame.Center == '/' && frame.LookBack == '*')
                     StateType = ScannerStateType.CloseStream;
 
