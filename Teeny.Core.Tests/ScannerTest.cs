@@ -17,9 +17,9 @@ namespace Teeny.Core.Tests
             var expectedErrors = new List<ErrorRecord>();
             var expectedTokens = new List<TokenRecord>
             {
-                new TokenRecord {Lexeme = "int", Token = Token.DataTypeInt},
+                new TokenRecord {Lexeme = "int", Token = Token.Int},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon}
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon}
             };
 
             // Act
@@ -43,8 +43,8 @@ namespace Teeny.Core.Tests
 
             var expectedTokens = new List<TokenRecord>
             {
-                new TokenRecord {Lexeme = "int", Token = Token.DataTypeInt},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon}
+                new TokenRecord {Lexeme = "int", Token = Token.Int },
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon },
             };
             // Act
             _scanner.Scan(sourceCode);
@@ -62,11 +62,11 @@ namespace Teeny.Core.Tests
             var expectedErrors = new List<ErrorRecord>();
             var expectedTokens = new List<TokenRecord>
             {
-                new TokenRecord {Lexeme = "int", Token = Token.DataTypeInt},
+                new TokenRecord {Lexeme = "int", Token = Token.Int},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ":=", Token = Token.OperatorAssignment},
+                new TokenRecord {Lexeme = ":=", Token = Token.Assignment},
                 new TokenRecord {Lexeme = "3", Token = Token.ConstantNumber},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon}
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon}
             };
 
             // Act
@@ -262,52 +262,52 @@ namespace Teeny.Core.Tests
             var expectedErrors = new List<ErrorRecord>();
             var expectedTokens = new List<TokenRecord>
             { 
-                new TokenRecord {Lexeme = "int", Token = Token.DataTypeInt},
-                new TokenRecord {Lexeme = "main", Token = Token.Identifier},
+                new TokenRecord {Lexeme = "int", Token = Token.Int},
+                new TokenRecord {Lexeme = "main", Token = Token.Main},
                 new TokenRecord {Lexeme = "(", Token = Token.ParenthesisLeft},
                 new TokenRecord {Lexeme = ")", Token = Token.ParenthesisRight},
                 new TokenRecord {Lexeme = "{", Token = Token.CurlyBracketLeft},
-                new TokenRecord {Lexeme = "read", Token = Token.StatementRead},
+                new TokenRecord {Lexeme = "read", Token = Token.Read},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon},
-                new TokenRecord {Lexeme = "if", Token = Token.StatementIf},
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon},
+                new TokenRecord {Lexeme = "if", Token = Token.If},
                 new TokenRecord {Lexeme = "0", Token = Token.ConstantNumber},
-                new TokenRecord {Lexeme = "<", Token = Token.OperatorConditionalLessThan},
+                new TokenRecord {Lexeme = "<", Token = Token.LessThan},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = "then", Token = Token.StatementThen},
+                new TokenRecord {Lexeme = "then", Token = Token.Then},
                 new TokenRecord {Lexeme = "fact", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ":=", Token = Token.OperatorAssignment},
+                new TokenRecord {Lexeme = ":=", Token = Token.Assignment},
                 new TokenRecord {Lexeme = "1", Token = Token.ConstantNumber},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon},
-                new TokenRecord {Lexeme = "repeat", Token = Token.StatementRepeat},
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon},
+                new TokenRecord {Lexeme = "repeat", Token = Token.Repeat},
                 new TokenRecord {Lexeme = "fact", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ":=", Token = Token.OperatorAssignment},
+                new TokenRecord {Lexeme = ":=", Token = Token.Assignment},
                 new TokenRecord {Lexeme = "fact", Token = Token.Identifier},
-                new TokenRecord {Lexeme = "*", Token = Token.OperatorArithmeticMultiply},
+                new TokenRecord {Lexeme = "*", Token = Token.Multiply},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon},
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ":=", Token = Token.OperatorAssignment},
+                new TokenRecord {Lexeme = ":=", Token = Token.Assignment},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = "-", Token = Token.OperatorArithmeticMinus},
+                new TokenRecord {Lexeme = "-", Token = Token.Minus},
                 new TokenRecord {Lexeme = "1", Token = Token.ConstantNumber},
-                new TokenRecord {Lexeme = "until", Token = Token.StatementUntil},
+                new TokenRecord {Lexeme = "until", Token = Token.Until},
                 new TokenRecord {Lexeme = "x", Token = Token.Identifier},
-                new TokenRecord {Lexeme = "=", Token = Token.OperatorConditionalEqual},
+                new TokenRecord {Lexeme = "=", Token = Token.Equal},
                 new TokenRecord {Lexeme = "0", Token = Token.ConstantNumber},
-                new TokenRecord {Lexeme = "write", Token = Token.StatementWrite},
+                new TokenRecord {Lexeme = "write", Token = Token.Write},
                 new TokenRecord {Lexeme = "\" The Factorial is \"", Token = Token.ConstantString},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon},
-                new TokenRecord {Lexeme = "write", Token = Token.StatementWrite},
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon},
+                new TokenRecord {Lexeme = "write", Token = Token.Write},
                 new TokenRecord {Lexeme = "fact", Token = Token.Identifier},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon},
-                new TokenRecord {Lexeme = "write", Token = Token.StatementWrite},
-                new TokenRecord {Lexeme = "endl", Token = Token.ConstantEndl},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon},
-                new TokenRecord {Lexeme = "end", Token = Token.StatementEnd},
-                new TokenRecord {Lexeme = "return", Token = Token.StatementReturn},
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon},
+                new TokenRecord {Lexeme = "write", Token = Token.Write},
+                new TokenRecord {Lexeme = "endl", Token = Token.Endl},
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon},
+                new TokenRecord {Lexeme = "end", Token = Token.End},
+                new TokenRecord {Lexeme = "return", Token = Token.Return},
                 new TokenRecord {Lexeme = "0", Token = Token.ConstantNumber},
-                new TokenRecord {Lexeme = ";", Token = Token.SymbolSemicolon},
+                new TokenRecord {Lexeme = ";", Token = Token.Semicolon},
                 new TokenRecord {Lexeme = "}", Token = Token.CurlyBracketRight}
             };
 
