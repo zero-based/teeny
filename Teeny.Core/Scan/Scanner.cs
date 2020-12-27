@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Teeny.Core.Scan.Attributes;
-using Teeny.Core.Scan.Exceptions;
 
 namespace Teeny.Core.Scan
 {
@@ -20,9 +19,11 @@ namespace Teeny.Core.Scan
         }
 
         public List<TokenRecord> TokensTable { get; set; } = new List<TokenRecord>();
+        public List<ErrorRecord> ErrorTable { get; set; } = new List<ErrorRecord>();
 
-        public List<TokenRecord> Scan(string sourceCode)
-        {
+
+        public void Scan(string sourceCode){
+
             var state = new ScannerState
             {
                 OnStateChanged = OnStateChanged,
@@ -35,29 +36,34 @@ namespace Teeny.Core.Scan
                 state.Update(frame);
             }
 
-            switch (state.StateType)
-            {
-                case ScannerStateType.ScanString:
-                    throw new UnclosedStringException();
-                case ScannerStateType.ScanComment:
-                    throw new UnclosedCommentException();
-                default:
-                    state.StateType = ScannerStateType.ScanEnd;
-                    return TokensTable;
-            }
+            state.StateType = ScannerStateType.ScanEnd;
         }
 
         private void OnStateChanged(StringBuilder lexeme)
         {
             var lexemeStr = lexeme.ToString();
             var token = Tokenize(lexemeStr);
-            var record = new TokenRecord
+
+            if (token == Token.Unknown)
+            {
+                var errorType = CategorizeError(lexemeStr);
+                var errorRecord = new ErrorRecord
+                {
+                    Lexeme = lexemeStr,
+                    ErrorType = errorType
+                };
+
+                ErrorTable.Add(errorRecord);
+                return;
+            }
+
+            var tokenRecord = new TokenRecord
             {
                 Lexeme = lexemeStr,
                 Token = token
             };
 
-            TokensTable.Add(record);
+            TokensTable.Add(tokenRecord);
         }
 
         private Token Tokenize(string lexeme)
@@ -69,7 +75,20 @@ namespace Teeny.Core.Scan
                 if (Regex.IsMatch(lexeme, key))
                     return value;
 
-            throw new UnknownLexemeException(lexeme);
+            return Token.Unknown;
+        }
+
+        private ErrorType CategorizeError(string lexeme)
+        {
+            var errorType = lexeme[0] switch
+            {
+                '\"' => ErrorType.UnclosedString,
+                '/' when lexeme[1] == '*' => ErrorType.UnclosedComment,
+                _ => ErrorType.UnknownToken
+            };
+
+            return errorType;
+
         }
 
         private void BuildLookupTables()

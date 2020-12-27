@@ -1,4 +1,4 @@
-﻿using Teeny.Core.Scan.Attributes;
+using Teeny.Core.Scan.Attributes;
 
 namespace Teeny.Core.Scan
 {
@@ -52,6 +52,7 @@ namespace Teeny.Core.Scan
         [ConstantToken("}")] CurlyBracketRight,
 
         [ConstantToken("(")] ParenthesisLeft,
-        [ConstantToken(")")] ParenthesisRight
+        [ConstantToken(")")] ParenthesisRight,
+        Unknown
     }
 }
