@@ -47,23 +47,23 @@ namespace Teeny.Core.Scan
             if (token == Token.Unknown)
             {
                 var errorType = CategorizeError(lexemeStr);
-                var errorRecord = new ErrorRecord
+                ErrorTable.Add(new ErrorRecord
                 {
                     Lexeme = lexemeStr,
                     ErrorType = errorType
-                };
+                });
 
-                ErrorTable.Add(errorRecord);
                 return;
             }
 
-            var tokenRecord = new TokenRecord
+            var ignorable = token.GetAttributeOfType<IgnoreAttribute>() != null;
+            if (ignorable) return;
+
+            TokensTable.Add(new TokenRecord
             {
                 Lexeme = lexemeStr,
                 Token = token
-            };
-
-            TokensTable.Add(tokenRecord);
+            });
         }
 
         private Token Tokenize(string lexeme)
