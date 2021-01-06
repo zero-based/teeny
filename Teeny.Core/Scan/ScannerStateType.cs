@@ -4,7 +4,7 @@ namespace Teeny.Core.Scan
 {
     public enum ScannerStateType
     {
-        [NonNotifiable] ScanStart,
+        ScanStart,
         ScanEnd,
 
         ScanAlphanumeric,
@@ -13,10 +13,9 @@ namespace Teeny.Core.Scan
         ScanOpenedBracket,
         ScanClosedBracket,
 
-        [NonNotifiable] ScanWhitespace,
+        ScanWhitespace,
 
-        [Stream] [NonNotifiable] ScanComment,
-
+        [Stream] ScanComment,
         [Stream] ScanString,
 
         CloseStream,
