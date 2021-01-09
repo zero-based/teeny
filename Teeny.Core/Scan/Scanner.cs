@@ -9,25 +9,24 @@ namespace Teeny.Core.Scan
 {
     public class Scanner
     {
-        public Dictionary<string, Token> PatternLookup = new Dictionary<string, Token>();
-
-        public Dictionary<string, Token> ReservedWordsLookup = new Dictionary<string, Token>();
-
         public Scanner()
         {
             BuildLookupTables();
         }
 
-        public List<TokenRecord> TokensTable { get; set; } = new List<TokenRecord>();
-        public List<ErrorRecord> ErrorTable { get; set; } = new List<ErrorRecord>();
+        private Dictionary<string, Token> ConstantTokensLookup { get; } = new Dictionary<string, Token>();
+        private List<(string pattern, Token token)> PatternTokensLookup { get; } = new List<(string pattern, Token token)>();
+        private HashSet<Token> IgnoredTokenLookup { get; } = new HashSet<Token>();
 
+        public List<TokenRecord> TokensTable { get; } = new List<TokenRecord>();
+        public List<ErrorRecord> ErrorTable { get; } = new List<ErrorRecord>();
 
-        public void Scan(string sourceCode){
-
+        public void Scan(string sourceCode)
+        {
             var state = new ScannerState
             {
                 OnStateChanged = OnStateChanged,
-                StateType = ScannerStateType.ScanStart
+                State = State.ScanStarted
             };
 
             for (var i = 0; i < sourceCode.Length; i++)
@@ -36,59 +35,57 @@ namespace Teeny.Core.Scan
                 state.Update(frame);
             }
 
-            state.StateType = ScannerStateType.ScanEnd;
+            state.State = State.ScanEnded;
         }
 
-        private void OnStateChanged(StringBuilder lexeme)
+        private void OnStateChanged(StringBuilder lexemeBuilder)
         {
-            var lexemeStr = lexeme.ToString();
-            var token = Tokenize(lexemeStr);
+            var lexeme = lexemeBuilder.ToString();
+            var token = Tokenize(lexeme);
 
             if (token == Token.Unknown)
             {
-                var errorType = CategorizeError(lexemeStr);
+                var error = CategorizeError(lexeme);
                 ErrorTable.Add(new ErrorRecord
                 {
-                    Lexeme = lexemeStr,
-                    ErrorType = errorType
+                    Lexeme = lexeme,
+                    Error = error
                 });
 
                 return;
             }
 
-            var ignorable = token.GetAttributeOfType<IgnoreAttribute>() != null;
-            if (ignorable) return;
+            if (IgnoredTokenLookup.Contains(token)) return;
 
             TokensTable.Add(new TokenRecord
             {
-                Lexeme = lexemeStr,
+                Lexeme = lexeme,
                 Token = token
             });
         }
 
         private Token Tokenize(string lexeme)
         {
-            var found = ReservedWordsLookup.TryGetValue(lexeme, out var tokenValue);
+            var found = ConstantTokensLookup.TryGetValue(lexeme, out var tokenValue);
             if (found) return tokenValue;
 
-            foreach (var (key, value) in PatternLookup)
-                if (Regex.IsMatch(lexeme, key))
-                    return value;
+            foreach (var (pattern, token) in PatternTokensLookup)
+                if (Regex.IsMatch(lexeme, pattern))
+                    return token;
 
             return Token.Unknown;
         }
 
-        private ErrorType CategorizeError(string lexeme)
+        private static Error CategorizeError(string lexeme)
         {
-            var errorType = lexeme[0] switch
+            var error = lexeme[0] switch
             {
-                '\"' => ErrorType.UnclosedString,
-                '/' when lexeme[1] == '*' => ErrorType.UnclosedComment,
-                _ => ErrorType.UnknownToken
+                '\"' => Error.UnclosedString,
+                '/' when lexeme[1] == '*' => Error.UnclosedComment,
+                _ => Error.UnknownToken
             };
 
-            return errorType;
-
+            return error;
         }
 
         private void BuildLookupTables()
@@ -96,11 +93,14 @@ namespace Teeny.Core.Scan
             var tokens = Enum.GetValues(typeof(Token)).Cast<Token>();
             foreach (var token in tokens)
             {
-                var reservedAttribute = token.GetAttributeOfType<ConstantTokenAttribute>();
-                if (reservedAttribute != null) ReservedWordsLookup.Add(reservedAttribute.ReservedWord, token);
+                var constantTokenAttribute = token.GetAttributeOfType<ConstantTokenAttribute>();
+                if (constantTokenAttribute != null) ConstantTokensLookup.Add(constantTokenAttribute.ReservedWord, token);
 
-                var patternAttribute = token.GetAttributeOfType<PatternTokenAttribute>();
-                if (patternAttribute != null) PatternLookup.Add(patternAttribute.Pattern, token);
+                var patternTokenAttribute = token.GetAttributeOfType<PatternTokenAttribute>();
+                if (patternTokenAttribute != null) PatternTokensLookup.Add((patternTokenAttribute.Pattern, token));
+
+                var ignoredTokenAttribute = token.GetAttributeOfType<IgnoredTokenAttribute>();
+                if (ignoredTokenAttribute != null) IgnoredTokenLookup.Add(token);
             }
         }
     }

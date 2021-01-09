@@ -18,7 +18,7 @@
             return base.GetHashCode();
         }
 
-        protected bool Equals(TokenRecord other)
+        private bool Equals(TokenRecord other)
         {
             return Lexeme == other.Lexeme && Token == other.Token;
         }

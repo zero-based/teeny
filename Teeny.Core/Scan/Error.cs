@@ -1,6 +1,6 @@
 ﻿namespace Teeny.Core.Scan
 {
-    public enum ErrorType
+    public enum Error
     {
         UnclosedString,
         UnclosedComment,

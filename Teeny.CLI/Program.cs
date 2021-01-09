@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using CommandLine;
 using ConsoleTables;
 using Teeny.Core.Scan;
+using CmdError = CommandLine.Error;
 
 namespace Teeny.CLI
 {
@@ -39,7 +40,7 @@ namespace Teeny.CLI
                 .WithNotParsed(errors => HandleParseError(errors, helpWriter));
         }
 
-        private static void HandleParseError(IEnumerable<Error> errors, StringWriter helpWriter)
+        private static void HandleParseError(IEnumerable<CmdError> errors, StringWriter helpWriter)
         {
             var enumerable = errors.ToList();
             if (enumerable.IsVersion() || enumerable.IsHelp())

@@ -4,11 +4,9 @@ namespace Teeny.Core.Scan
 {
     public enum Token
     {
-        [PatternToken(@"^[a-zA-Z]([a-zA-Z0-9])*$")]
-        Identifier,
+        [PatternToken(@"^[a-zA-Z]([a-zA-Z0-9])*$")] Identifier,
 
-        [PatternToken(@"^(\+|-)?[0-9]+(\.[0-9]+)?$")]
-        ConstantNumber,
+        [PatternToken(@"^(\+|-)?[0-9]+(\.[0-9]+)?$")] ConstantNumber,
         [PatternToken(@"^"".*""$")] ConstantString,
 
         [ConstantToken("int")] Int,
@@ -55,8 +53,8 @@ namespace Teeny.Core.Scan
         [ConstantToken("(")] ParenthesisLeft,
         [ConstantToken(")")] ParenthesisRight,
 
-        [Ignore] [PatternToken(@"^/\*(.|\s)*\*/$")] Comment,
-        [Ignore] [PatternToken(@"^\s+")] Whitespace,
-        Unknown
+        [IgnoredToken] [PatternToken(@"^/\*(.|\s)*\*/$")] Comment,
+        [IgnoredToken] [PatternToken(@"^\s+")] Whitespace,
+        [IgnoredToken] Unknown
     }
 }
