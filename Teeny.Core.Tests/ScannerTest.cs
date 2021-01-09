@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DeepEqual.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Teeny.Core.Scan;
 
@@ -15,7 +16,7 @@ namespace Teeny.Core.Tests
         {
             // Arrange
             const string sourceCode = "int x;";
-            var expectedErrors = new List<ErrorRecord>();
+
             var expectedTokens = new List<TokenRecord>
             {
                 new TokenRecord {Lexeme = "int", Token = Token.Int},
@@ -27,9 +28,8 @@ namespace Teeny.Core.Tests
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
-
+            Assert.AreEqual(0, _scanner.ErrorTable.Count);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -37,6 +37,7 @@ namespace Teeny.Core.Tests
         {
             // Arrange
             const string sourceCode = "int 2x;";
+
             var expectedErrors = new List<ErrorRecord>
             {
                 new ErrorRecord {Lexeme = "2x", Error = Error.UnknownToken}
@@ -47,12 +48,13 @@ namespace Teeny.Core.Tests
                 new TokenRecord {Lexeme = "int", Token = Token.Int },
                 new TokenRecord {Lexeme = ";", Token = Token.Semicolon },
             };
+
             // Act
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -60,7 +62,7 @@ namespace Teeny.Core.Tests
         {
             // Arrange
             const string sourceCode = "int x:= 3;";
-            var expectedErrors = new List<ErrorRecord>();
+
             var expectedTokens = new List<TokenRecord>
             {
                 new TokenRecord {Lexeme = "int", Token = Token.Int},
@@ -74,8 +76,8 @@ namespace Teeny.Core.Tests
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            Assert.AreEqual(0, _scanner.ErrorTable.Count);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -83,7 +85,7 @@ namespace Teeny.Core.Tests
         {
             // Arrange
             const string sourceCode = "\"/Not A comment/\"";
-            var expectedErrors = new List<ErrorRecord>();
+
             var expectedTokens = new List<TokenRecord>
             {
                 new TokenRecord {Lexeme = "\"/Not A comment/\"", Token = Token.ConstantString}
@@ -93,8 +95,8 @@ namespace Teeny.Core.Tests
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            Assert.AreEqual(0, _scanner.ErrorTable.Count);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -102,7 +104,7 @@ namespace Teeny.Core.Tests
         {
             // Arrange
             const string sourceCode = "333";
-            var expectedErrors = new List<ErrorRecord>();
+
             var expectedTokens = new List<TokenRecord>
             {
                 new TokenRecord {Lexeme = "333", Token = Token.ConstantNumber}
@@ -112,8 +114,8 @@ namespace Teeny.Core.Tests
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            Assert.AreEqual(0, _scanner.ErrorTable.Count);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -121,19 +123,18 @@ namespace Teeny.Core.Tests
         {
             // Arrange
             const string sourceCode = "3E9";
+
             var expectedErrors = new List<ErrorRecord>
             {
                 new ErrorRecord {Lexeme = "3E9", Error = Error.UnknownToken}
             };
-            var expectedTokens = new List<TokenRecord>();
-            //var expectedTokens
 
             // Act
             _scanner.Scan(sourceCode);
 
-            // Act
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            // Assert
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            Assert.AreEqual(0, _scanner.TokensTable.Count);
         }
 
         [TestMethod]
@@ -141,18 +142,18 @@ namespace Teeny.Core.Tests
         {
             // Arrange
             const string sourceCode = "0.";
+
             var expectedErrors = new List<ErrorRecord>
             {
                 new ErrorRecord {Lexeme = "0.", Error = Error.UnknownToken}
             };
-            var expectedTokens = new List<TokenRecord>();
 
             // Act
             _scanner.Scan(sourceCode);
 
-            // Act
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            // Assert
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            Assert.AreEqual(0, _scanner.TokensTable.Count);
         }
 
         [TestMethod]
@@ -165,15 +166,13 @@ namespace Teeny.Core.Tests
             {
                 new ErrorRecord {Lexeme = "0.x", Error = Error.UnknownToken}
             };
-            var expectedTokens = new List<TokenRecord>();
-
 
             // Act
             _scanner.Scan(sourceCode);
 
-            // Act
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            // Assert
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            Assert.AreEqual(0, _scanner.TokensTable.Count);
         }
 
         [TestMethod]
@@ -186,14 +185,13 @@ namespace Teeny.Core.Tests
             {
                 new ErrorRecord {Lexeme = "0.0.0", Error = Error.UnknownToken}
             };
-            var expectedTokens = new List<TokenRecord>();
 
             // Act
             _scanner.Scan(sourceCode);
 
-            // Act
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            // Assert
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            Assert.AreEqual(0, _scanner.TokensTable.Count);
         }
 
         [TestMethod]
@@ -206,14 +204,13 @@ namespace Teeny.Core.Tests
             {
                 new ErrorRecord {Lexeme = "\"foo", Error = Error.UnclosedString}
             };
-            var expectedTokens = new List<TokenRecord>();
 
             // Act
             _scanner.Scan(sourceCode);
 
-            // Act
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            // Assert
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            Assert.AreEqual(0, _scanner.TokensTable.Count);
         }
 
         [TestMethod]
@@ -228,7 +225,7 @@ namespace Teeny.Core.Tests
                 new ErrorRecord {Lexeme = $"\"foo{Environment.NewLine}", Error = Error.UnclosedString}
             };
 
-            var expectedTokens = new List<TokenRecord>()
+            var expectedTokens = new List<TokenRecord>
             {
                 new TokenRecord{Lexeme = "int", Token = Token.Int},
                 new TokenRecord{Lexeme = "bar", Token = Token.Identifier},
@@ -240,9 +237,9 @@ namespace Teeny.Core.Tests
             // Act
             _scanner.Scan(sourceCode);
 
-            // Act
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            // Assert
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -256,14 +253,12 @@ namespace Teeny.Core.Tests
                 new ErrorRecord {Lexeme = "/*", Error = Error.UnclosedComment}
             };
 
-            var expectedTokens = new List<TokenRecord>();
-
             // Act
             _scanner.Scan(sourceCode);
 
-            // Act
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            // Assert
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            Assert.AreEqual(0, _scanner.TokensTable.Count);
         }
 
         [TestMethod]
@@ -280,8 +275,6 @@ namespace Teeny.Core.Tests
 
                 ";
 
-            // Act
-            var expectedErrors = new List<ErrorRecord>();
             var expectedTokens = new List<TokenRecord>
             {
                 new TokenRecord {Lexeme = "int", Token = Token.Int},
@@ -308,8 +301,8 @@ namespace Teeny.Core.Tests
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            Assert.AreEqual(0, _scanner.ErrorTable.Count);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -333,9 +326,6 @@ namespace Teeny.Core.Tests
                     return 0;
                 }";
 
-
-            // Act
-            var expectedErrors = new List<ErrorRecord>();
             var expectedTokens = new List<TokenRecord>
             { 
                 new TokenRecord {Lexeme = "int", Token = Token.Int},
@@ -391,8 +381,8 @@ namespace Teeny.Core.Tests
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            Assert.AreEqual(0, _scanner.ErrorTable.Count);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
 
@@ -417,7 +407,6 @@ namespace Teeny.Core.Tests
                     return 0;
                 }";
 
-            var expectedErrors = new List<ErrorRecord>();
             var expectedTokens = new List<TokenRecord>
             {
                 new TokenRecord {Lexeme = "int", Token = Token.Int},
@@ -491,8 +480,8 @@ namespace Teeny.Core.Tests
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            Assert.AreEqual(0, _scanner.ErrorTable.Count);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
         [TestMethod]
@@ -557,13 +546,12 @@ namespace Teeny.Core.Tests
                 new TokenRecord {Lexeme = "}", Token = Token.CurlyBracketRight},
             };
 
-
             // Act
             _scanner.Scan(sourceCode);
 
             // Assert
-            CollectionAssert.AreEqual(expectedErrors, _scanner.ErrorTable);
-            CollectionAssert.AreEqual(expectedTokens, _scanner.TokensTable);
+            _scanner.ErrorTable.ShouldDeepEqual(expectedErrors);
+            _scanner.TokensTable.ShouldDeepEqual(expectedTokens);
         }
 
     }
