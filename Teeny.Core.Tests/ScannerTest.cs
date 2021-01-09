@@ -39,7 +39,7 @@ namespace Teeny.Core.Tests
             const string sourceCode = "int 2x;";
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = "2x", ErrorType = ErrorType.UnknownToken}
+                new ErrorRecord {Lexeme = "2x", Error = Error.UnknownToken}
             };
 
             var expectedTokens = new List<TokenRecord>
@@ -123,7 +123,7 @@ namespace Teeny.Core.Tests
             const string sourceCode = "3E9";
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = "3E9", ErrorType = ErrorType.UnknownToken}
+                new ErrorRecord {Lexeme = "3E9", Error = Error.UnknownToken}
             };
             var expectedTokens = new List<TokenRecord>();
             //var expectedTokens
@@ -143,7 +143,7 @@ namespace Teeny.Core.Tests
             const string sourceCode = "0.";
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = "0.", ErrorType = ErrorType.UnknownToken}
+                new ErrorRecord {Lexeme = "0.", Error = Error.UnknownToken}
             };
             var expectedTokens = new List<TokenRecord>();
 
@@ -163,7 +163,7 @@ namespace Teeny.Core.Tests
 
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = "0.x", ErrorType = ErrorType.UnknownToken}
+                new ErrorRecord {Lexeme = "0.x", Error = Error.UnknownToken}
             };
             var expectedTokens = new List<TokenRecord>();
 
@@ -184,7 +184,7 @@ namespace Teeny.Core.Tests
 
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = "0.0.0", ErrorType = ErrorType.UnknownToken}
+                new ErrorRecord {Lexeme = "0.0.0", Error = Error.UnknownToken}
             };
             var expectedTokens = new List<TokenRecord>();
 
@@ -204,7 +204,7 @@ namespace Teeny.Core.Tests
 
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = "\"foo", ErrorType = ErrorType.UnclosedString}
+                new ErrorRecord {Lexeme = "\"foo", Error = Error.UnclosedString}
             };
             var expectedTokens = new List<TokenRecord>();
 
@@ -225,7 +225,7 @@ namespace Teeny.Core.Tests
 
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = $"\"foo{Environment.NewLine}", ErrorType = ErrorType.UnclosedString}
+                new ErrorRecord {Lexeme = $"\"foo{Environment.NewLine}", Error = Error.UnclosedString}
             };
 
             var expectedTokens = new List<TokenRecord>()
@@ -253,7 +253,7 @@ namespace Teeny.Core.Tests
 
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord {Lexeme = "/*", ErrorType = ErrorType.UnclosedComment}
+                new ErrorRecord {Lexeme = "/*", Error = Error.UnclosedComment}
             };
 
             var expectedTokens = new List<TokenRecord>();
@@ -518,13 +518,13 @@ namespace Teeny.Core.Tests
 
             var expectedErrors = new List<ErrorRecord>
             {
-                new ErrorRecord{Lexeme = "#", ErrorType = ErrorType.UnknownToken},
-                new ErrorRecord{Lexeme = "10.5.2", ErrorType = ErrorType.UnknownToken},
-                new ErrorRecord{Lexeme = ".35", ErrorType = ErrorType.UnknownToken},
-                new ErrorRecord{Lexeme = $"\"the val of z1 + 1.5*factorial(5) is =;{Environment.NewLine}", ErrorType = ErrorType.UnclosedString},
-                new ErrorRecord{Lexeme = "==", ErrorType = ErrorType.UnknownToken},
-                new ErrorRecord{Lexeme = $"\";{Environment.NewLine}", ErrorType = ErrorType.UnclosedString},
-                new ErrorRecord{Lexeme = $"\"#Love_Compiler;{Environment.NewLine}", ErrorType = ErrorType.UnclosedString},
+                new ErrorRecord{Lexeme = "#", Error = Error.UnknownToken},
+                new ErrorRecord{Lexeme = "10.5.2", Error = Error.UnknownToken},
+                new ErrorRecord{Lexeme = ".35", Error = Error.UnknownToken},
+                new ErrorRecord{Lexeme = $"\"the val of z1 + 1.5*factorial(5) is =;{Environment.NewLine}", Error = Error.UnclosedString},
+                new ErrorRecord{Lexeme = "==", Error = Error.UnknownToken},
+                new ErrorRecord{Lexeme = $"\";{Environment.NewLine}", Error = Error.UnclosedString},
+                new ErrorRecord{Lexeme = $"\"#Love_Compiler;{Environment.NewLine}", Error = Error.UnclosedString},
             };
 
             var expectedTokens = new List<TokenRecord>

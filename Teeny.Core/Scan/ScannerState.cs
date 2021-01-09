@@ -7,22 +7,22 @@ namespace Teeny.Core.Scan
 {
     public class ScannerState
     {
-        private StringBuilder Lexeme { get; } = new StringBuilder();
+        private StringBuilder LexemeBuilder { get; } = new StringBuilder();
 
-        private ScannerStateType _stateType = ScannerStateType.Unknown;
-        public ScannerStateType StateType
+        private State _state = State.Unknown;
+        public State State
         {
-            get => _stateType;
+            get => _state;
             set
             {
-                if (_stateType == value) return;
+                if (_state == value) return;
 
                 // Notify for change if there's a lexeme to notify for
-                if (Lexeme.Length > 0) OnStateChanged(Lexeme);
+                if (LexemeBuilder.Length > 0) OnStateChanged(LexemeBuilder);
 
                 // Update type and start a new lexeme
-                _stateType = value;
-                Lexeme.Clear();
+                _state = value;
+                LexemeBuilder.Clear();
             }
         }
 
@@ -30,43 +30,43 @@ namespace Teeny.Core.Scan
 
         public void Update(ScanFrame frame)
         {
-            var isStream = _stateType.GetAttributeOfType<StreamAttribute>() != null;
+            var isStream = _state.GetAttributeOfType<StreamAttribute>() != null;
             if (isStream)
             {
-                Lexeme.Append(frame.Center);
+                LexemeBuilder.Append(frame.Center);
 
                 // Close stream if it's eligible for closure
-                if (StateType == ScannerStateType.ScanString && (frame.Center == '"' || frame.Center == '\n') ||
-                    StateType == ScannerStateType.ScanComment && frame.Center == '/' && frame.LookBack == '*')
-                    StateType = ScannerStateType.CloseStream;
+                if (State == State.ScanningString && (frame.Center == '"' || frame.Center == '\n') ||
+                    State == State.ScanningComment && frame.Center == '/' && frame.LookBack == '*')
+                    State = State.StreamClosed;
 
                 return;
             }
 
-            StateType = GetStateType(frame);
-            Lexeme.Append(frame.Center);
+            State = GetState(frame);
+            LexemeBuilder.Append(frame.Center);
         }
 
-        private static ScannerStateType GetStateType(ScanFrame frame)
+        private static State GetState(ScanFrame frame)
         {
-            var stateType = ScannerStateType.Unknown;
+            var state = State.Unknown;
 
             if (frame.Center == '"')
-                stateType = ScannerStateType.ScanString;
+                state = State.ScanningString;
             else if (frame.Center == '/' && frame.LookAhead == '*')
-                stateType = ScannerStateType.ScanComment;
+                state = State.ScanningComment;
             else if (char.IsLetterOrDigit(frame.Center) || frame.Center == '.')
-                stateType = ScannerStateType.ScanAlphanumeric;
+                state = State.ScanningAlphanumeric;
             else if (char.IsWhiteSpace(frame.Center))
-                stateType = ScannerStateType.ScanWhitespace;
+                state = State.ScanningWhitespace;
             else if (frame.Center == '(' || frame.Center == '{' || frame.Center == '[')
-                stateType = ScannerStateType.ScanOpenedBracket;
+                state = State.ScanningLeftBracket;
             else if (frame.Center == ')' || frame.Center == '}' || frame.Center == ']')
-                stateType = ScannerStateType.ScanClosedBracket;
+                state = State.ScanningRightBracket;
             else if (Regex.IsMatch(frame.Center.ToString(), @"[^\w\d\s]"))
-                stateType = ScannerStateType.ScanSymbol;
+                state = State.ScanningSymbol;
 
-            return stateType;
+            return state;
         }
     }
 }

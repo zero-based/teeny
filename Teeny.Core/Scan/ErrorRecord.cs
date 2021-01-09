@@ -3,7 +3,7 @@
     public class ErrorRecord
     {
         public string Lexeme { get; set; }
-        public ErrorType ErrorType { get; set; }
+        public Error Error { get; set; }
 
         public override bool Equals(object obj)
         {
@@ -18,9 +18,9 @@
             return base.GetHashCode();
         }
 
-        protected bool Equals(ErrorRecord other)
+        private bool Equals(ErrorRecord other)
         {
-            return Lexeme == other.Lexeme && ErrorType == other.ErrorType;
+            return Lexeme == other.Lexeme && Error == other.Error;
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Teeny.Core.Scan.Attributes
 {
-    public class IgnoreAttribute : Attribute
+    public class IgnoredTokenAttribute : Attribute
     {
     }
 }
