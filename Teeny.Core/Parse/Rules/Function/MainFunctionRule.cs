@@ -5,11 +5,11 @@ namespace Teeny.Core.Parse.Rules.Function
 {
     public class MainFunctionRule : BaseRule
     {
-        public MainFunctionRule(DataTypeRule dataType, TokenRecord main,
+        public MainFunctionRule(TokenRecord dataType, TokenRecord main,
             TokenRecord leftParenthesis, TokenRecord rightParenthesis,
             FunctionBodyRule functionBody)
         {
-            DataType = dataType;
+            DataType.Assign(dataType);
             Main.Assign(main);
             LeftParenthesis.Assign(leftParenthesis);
             RightParenthesis.Assign(rightParenthesis);
@@ -20,7 +20,7 @@ namespace Teeny.Core.Parse.Rules.Function
         {
         }
 
-        public DataTypeRule DataType { get; set; }
+        public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
         public TerminalNode Main { get; set; } = new TerminalNode(Token.Main);
         public TerminalNode LeftParenthesis { get; set; } = new TerminalNode(Token.ParenthesisLeft);
         public TerminalNode RightParenthesis { get; set; } = new TerminalNode(Token.ParenthesisRight);

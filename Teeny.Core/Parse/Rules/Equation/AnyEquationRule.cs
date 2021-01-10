@@ -16,7 +16,6 @@ namespace Teeny.Core.Parse.Rules.Equation
         {
             NoBracketEquation = noBracketEquation;
         }
-        ]
 
         public AnyEquationRule()
         {

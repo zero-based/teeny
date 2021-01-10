@@ -1,5 +1,4 @@
-﻿using System;
-using Teeny.Core.Scan;
+﻿using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {

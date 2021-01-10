@@ -1,12 +1,12 @@
-﻿using Teeny.Core.Parse.Rules.Operators;
+﻿using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Equation
 {
     public class ExtraEquationRule : BaseRule
     {
-        public ExtraEquationRule(ArithmeticOperatorRule arithmeticOperator, AnyEquationRule anyEquation)
+        public ExtraEquationRule(TokenRecord arithmeticOperator, AnyEquationRule anyEquation)
         {
-            ArithmeticOperator = arithmeticOperator;
+            ArithmeticOperator.Assign(arithmeticOperator);
             AnyEquation = anyEquation;
         }
 
@@ -14,7 +14,8 @@ namespace Teeny.Core.Parse.Rules.Equation
         {
         }
 
-        public ArithmeticOperatorRule ArithmeticOperator { get; set; }
+        public TerminalNode ArithmeticOperator { get; set; } =
+            new TerminalNode(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
 
         public AnyEquationRule AnyEquation { get; set; }
     }

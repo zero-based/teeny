@@ -1,4 +1,4 @@
-﻿using Teeny.Core.Parse.Rules.Operators;
+﻿using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Statements.Condition
 {
@@ -8,15 +8,15 @@ namespace Teeny.Core.Parse.Rules.Statements.Condition
         {
         }
 
-        public ExtraConditionRule(BooleanOperatorRule booleanOperator, ConditionRule condition,
+        public ExtraConditionRule(TokenRecord booleanOperator, ConditionRule condition,
             ExtraConditionRule extraCondition)
         {
-            BooleanOperator = booleanOperator;
+            BooleanOperator.Assign(booleanOperator);
             Condition = condition;
             ExtraCondition = extraCondition;
         }
 
-        public BooleanOperatorRule BooleanOperator { get; set; }
+        public TerminalNode BooleanOperator { get; set; } = new TerminalNode(Token.And, Token.Or);
         public ConditionRule Condition { get; set; }
         public ExtraConditionRule ExtraCondition { get; set; }
     }

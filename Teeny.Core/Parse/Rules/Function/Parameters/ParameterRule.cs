@@ -5,9 +5,9 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
 {
     public class ParameterRule : BaseRule
     {
-        public ParameterRule(DataTypeRule dataType, TokenRecord identifier)
+        public ParameterRule(TokenRecord dataType, TokenRecord identifier)
         {
-            DataType = dataType;
+            DataType.Assign(dataType);
             Identifier.Assign(identifier);
         }
 
@@ -15,7 +15,7 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
         {
         }
 
-        public DataTypeRule DataType { get; set; }
+        public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
     }
 }
