@@ -1,4 +1,5 @@
-﻿using Teeny.Core.Parse.Rules.Statements.Condition;
+﻿using System.Collections.Generic;
+using Teeny.Core.Parse.Rules.Statements.Condition;
 using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Statements.If
@@ -6,19 +7,19 @@ namespace Teeny.Core.Parse.Rules.Statements.If
     public class ElseIfStatementRule : BaseRule
     {
         public ElseIfStatementRule(TokenRecord elseIf, ConditionStatementRule conditionStatement, TokenRecord then,
-            StatementRule statement, ExtraElseIfRule extraElseIf)
+            ICollection<StatementRule> statements, ExtraElseIfRule extraElseIf)
         {
             ElseIf.Assign(elseIf);
             ConditionStatement = conditionStatement;
             Then.Assign(then);
-            Statement = statement;
+            Statements = statements;
             ExtraElseIf = extraElseIf;
         }
 
         public TerminalNode ElseIf { get; set; } = new TerminalNode(Token.ElseIf);
         public ConditionStatementRule ConditionStatement { get; set; }
         public TerminalNode Then { get; set; } = new TerminalNode(Token.Then);
-        public StatementRule Statement { get; set; }
+        public ICollection<StatementRule> Statements { get; set; }
         public ExtraElseIfRule ExtraElseIf { get; set; }
     }
 }
