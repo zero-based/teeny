@@ -8,6 +8,10 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
             ExtraParameter = extraParameter;
         }
 
+        public ParametersRule()
+        {
+        }
+
         public ParameterRule Parameter { get; set; }
         public ExtraParameterRule ExtraParameter { get; set; }
     }

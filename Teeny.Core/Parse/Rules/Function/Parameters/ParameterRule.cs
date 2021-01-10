@@ -11,6 +11,10 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
             Identifier.Assign(identifier);
         }
 
+        public ParameterRule()
+        {
+        }
+
         public DataTypeRule DataType { get; set; }
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
     }

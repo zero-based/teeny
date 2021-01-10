@@ -11,6 +11,10 @@ namespace Teeny.Core.Parse.Rules.Statements
             Semicolon.Assign(semicolon);
         }
 
+        public ReadStatementRule()
+        {
+        }
+
         public TerminalNode Read { get; set; } = new TerminalNode(Token.Read);
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
         public TerminalNode Semicolon { get; set; } = new TerminalNode(Token.Semicolon);

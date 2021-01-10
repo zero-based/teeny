@@ -10,6 +10,10 @@ namespace Teeny.Core.Parse.Rules.Function.Arguments
             Identifier.Assign(identifier);
         }
 
+        public ExtraArgumentRule()
+        {
+        }
+
         public TerminalNode Comma { get; set; } = new TerminalNode(Token.Comma);
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
     }

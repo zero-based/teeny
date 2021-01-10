@@ -17,6 +17,10 @@ namespace Teeny.Core.Parse.Rules.Function
             RightParenthesis.Assign(rightParenthesisRecord);
         }
 
+        public FunctionDeclarationRule()
+        {
+        }
+
         public DataTypeRule DataType { get; set; }
         public FunctionNameRule FunctionName { get; set; }
         public TerminalNode LeftParenthesis { get; set; } = new TerminalNode(Token.ParenthesisLeft);

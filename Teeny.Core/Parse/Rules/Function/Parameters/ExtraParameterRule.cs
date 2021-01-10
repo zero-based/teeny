@@ -10,6 +10,10 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
             Parameter = parameter;
         }
 
+        public ExtraParameterRule()
+        {
+        }
+
         public TerminalNode Comma { get; set; } = new TerminalNode(Token.Comma);
         public ParameterRule Parameter { get; set; }
     }

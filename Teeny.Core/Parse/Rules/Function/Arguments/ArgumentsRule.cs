@@ -10,6 +10,10 @@ namespace Teeny.Core.Parse.Rules.Function.Arguments
             ExtraArgument = extraArgument;
         }
 
+        public ArgumentsRule()
+        {
+        }
+
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
         public ExtraArgumentRule ExtraArgument { get; set; }
     }

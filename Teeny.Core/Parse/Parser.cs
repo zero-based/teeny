@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Teeny.Core.Parse.Rules;
 using Teeny.Core.Scan;
 
@@ -8,7 +9,7 @@ namespace Teeny.Core.Parse
     {
         public BaseRule Parse(List<TokenRecord> tokens)
         {
-            return new ProgramRule(null, null);
+            return new ProgramRule();
         }
     }
 }

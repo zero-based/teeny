@@ -14,6 +14,10 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
             AssignmentStatement = assignmentStatement;
         }
 
+        public IdOrAssignmentRule()
+        {
+        }
+
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
         public AssignmentStatementRule AssignmentStatement { get; set; }
     }

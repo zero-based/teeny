@@ -40,6 +40,10 @@ namespace Teeny.Core.Parse.Rules.Statements
             ReturnStatement = returnStatement;
         }
 
+        public StatementRule()
+        {
+        }
+
         public AssignmentStatementRule AssignmentStatement { get; set; }
         public DeclarationStatementRule DeclarationStatement { get; set; }
         public WriteStatementRule WriteStatement { get; set; }

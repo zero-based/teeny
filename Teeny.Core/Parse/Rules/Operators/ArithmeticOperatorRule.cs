@@ -9,6 +9,10 @@ namespace Teeny.Core.Parse.Rules.Operators
             ArithmeticOperator.Assign(arithmeticOperator);
         }
 
+        public ArithmeticOperatorRule()
+        {
+        }
+
         public TerminalNode ArithmeticOperator { get; set; } =
             new TerminalNode(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
     }

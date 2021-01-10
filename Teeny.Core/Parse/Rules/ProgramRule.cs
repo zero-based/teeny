@@ -11,6 +11,10 @@ namespace Teeny.Core.Parse.Rules
             MainFunction = mainFunction;
         }
 
+        public ProgramRule()
+        {
+        }
+
         public ICollection<FunctionStatementRule> FunctionStatement { get; set; }
         public MainFunctionRule MainFunction { get; set; }
     }

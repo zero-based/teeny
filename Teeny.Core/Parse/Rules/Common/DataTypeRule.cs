@@ -9,6 +9,10 @@ namespace Teeny.Core.Parse.Rules.Common
             DataType.Assign(dataType);
         }
 
+        public DataTypeRule()
+        {
+        }
+
         public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
     }
 }

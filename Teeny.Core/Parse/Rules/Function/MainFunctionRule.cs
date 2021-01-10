@@ -16,6 +16,10 @@ namespace Teeny.Core.Parse.Rules.Function
             FunctionBody = functionBody;
         }
 
+        public MainFunctionRule()
+        {
+        }
+
         public DataTypeRule DataType { get; set; }
         public TerminalNode Main { get; set; } = new TerminalNode(Token.Main);
         public TerminalNode LeftParenthesis { get; set; } = new TerminalNode(Token.ParenthesisLeft);

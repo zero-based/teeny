@@ -8,6 +8,10 @@
             ExtraCondition = extraCondition;
         }
 
+        public ConditionStatementRule()
+        {
+        }
+
         public ConditionRule Condition { get; set; }
         public ExtraConditionRule ExtraCondition { get; set; }
     }

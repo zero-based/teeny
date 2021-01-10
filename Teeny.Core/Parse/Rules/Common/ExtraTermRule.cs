@@ -11,6 +11,10 @@ namespace Teeny.Core.Parse.Rules.Common
             ExtraTerm = extraTerm;
         }
 
+        public ExtraTermRule()
+        {
+        }
+
         public ArithmeticOperatorRule ArithmeticOperator { get; set; }
         public TermRule Term { get; set; }
         public ExtraTermRule ExtraTerm { get; set; }

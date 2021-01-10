@@ -12,6 +12,10 @@ namespace Teeny.Core.Parse.Rules.Statements.If
             End.Assign(end);
         }
 
+        public ElseStatementRule()
+        {
+        }
+
         public TerminalNode Else { get; set; } = new TerminalNode(Token.Else);
         public ICollection<StatementRule> Statements { get; set; }
         public TerminalNode End { get; set; } = new TerminalNode(Token.End);

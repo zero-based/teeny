@@ -19,6 +19,10 @@ namespace Teeny.Core.Parse.Rules.Statements
             Semicolon.Assign(semicolon);
         }
 
+        public WriteStatementRule()
+        {
+        }
+
         public TerminalNode Write { get; set; } = new TerminalNode(Token.Write);
         public ExpressionRule Expression { get; set; }
         public TerminalNode Endl { get; set; } = new TerminalNode(Token.Endl);

@@ -9,6 +9,10 @@ namespace Teeny.Core.Parse.Rules.Operators
             BooleanOperator.Assign(tokenRecord);
         }
 
+        public BooleanOperatorRule()
+        {
+        }
+
         public TerminalNode BooleanOperator { get; set; } = new TerminalNode(Token.And, Token.Or);
     }
 }

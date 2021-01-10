@@ -16,6 +16,11 @@ namespace Teeny.Core.Parse.Rules.Equation
         {
             NoBracketEquation = noBracketEquation;
         }
+        ]
+
+        public AnyEquationRule()
+        {
+        }
 
         public TerminalNode ParenthesisLeft { get; set; } = new TerminalNode(Token.ParenthesisLeft);
         public NoBracketEquationRule NoBracketEquation { get; set; }
