@@ -15,10 +15,6 @@ namespace Teeny.Core.Parse.Rules.Function
             ReturnStatement = returnStatement;
         }
 
-        public FunctionBodyRule()
-        {
-        }
-
         public TerminalNode LeftCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketLeft);
         public TerminalNode RightCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketRight);
         public ICollection<StatementRule> Statements { get; set; }

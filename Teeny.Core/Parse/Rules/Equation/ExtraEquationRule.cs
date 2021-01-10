@@ -10,10 +10,6 @@ namespace Teeny.Core.Parse.Rules.Equation
             AnyEquation = anyEquation;
         }
 
-        public ExtraEquationRule()
-        {
-        }
-
         public ArithmeticOperatorRule ArithmeticOperator { get; set; }
 
         public AnyEquationRule AnyEquation { get; set; }

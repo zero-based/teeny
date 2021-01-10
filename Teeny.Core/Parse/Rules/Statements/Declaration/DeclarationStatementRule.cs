@@ -14,10 +14,6 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
             Semicolon.Assign(semicolon);
         }
 
-        public DeclarationStatementRule()
-        {
-        }
-
         public DataTypeRule DataType { get; set; }
         public IdOrAssignmentRule IdOrAssignment { get; set; }
         public ExtraIdOrAssignRule ExtraIdOrAssign { get; set; }

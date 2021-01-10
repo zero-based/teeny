@@ -20,10 +20,6 @@ namespace Teeny.Core.Parse.Rules.Common
             Equation = equation;
         }
 
-        public ExpressionRule()
-        {
-        }
-
         public TerminalNode String { get; set; } = new TerminalNode(Token.ConstantString);
         public TermRule Term { get; set; }
         public EquationRule Equation { get; set; }

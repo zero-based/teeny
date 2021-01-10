@@ -14,10 +14,6 @@ namespace Teeny.Core.Parse.Rules.Equation
             ExtraTerm = extraTerm;
         }
 
-        public NoBracketEquationRule()
-        {
-        }
-
         public TermRule Term1 { get; set; }
         public ArithmeticOperatorRule ArithmeticOperator { get; set; }
         public TermRule Term2 { get; set; }

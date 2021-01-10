@@ -13,10 +13,6 @@ namespace Teeny.Core.Parse.Rules.Statements.Condition
             Term = term;
         }
 
-        public ConditionRule()
-        {
-        }
-
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
         public ConditionOperatorRule ConditionOperator { get; set; }
         public TermRule Term { get; set; }

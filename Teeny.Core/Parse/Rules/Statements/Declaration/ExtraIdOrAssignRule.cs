@@ -13,10 +13,6 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
             ExtraIdOrAssign = extraIdOrAssign;
         }
 
-        public ExtraIdOrAssignRule()
-        {
-        }
-
         public TerminalNode Comma { get; set; } = new TerminalNode(Token.Comma);
         public IdOrAssignmentRule IdOrAssignment { get; set; }
         public ExtraIdOrAssignRule ExtraIdOrAssign { get; set; }

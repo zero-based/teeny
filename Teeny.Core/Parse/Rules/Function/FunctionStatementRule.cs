@@ -8,10 +8,6 @@
             FunctionBody = functionBody;
         }
 
-        public FunctionStatementRule()
-        {
-        }
-
         public FunctionDeclarationRule FunctionDeclaration { get; set; }
         public FunctionBodyRule FunctionBody { get; set; }
     }

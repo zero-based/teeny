@@ -11,10 +11,6 @@ namespace Teeny.Core.Parse.Rules.Statements.If
             End.Assign(end);
         }
 
-        public ExtraElseIfRule()
-        {
-        }
-
         public ElseIfStatementRule ElseIfStatement { get; set; }
         public ElseStatementRule ElseStatement { get; set; }
         public TerminalNode End { get; set; } = new TerminalNode(Token.End);

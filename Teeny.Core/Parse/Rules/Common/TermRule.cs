@@ -20,10 +20,6 @@ namespace Teeny.Core.Parse.Rules.Common
             FunctionCall = functionCall;
         }
 
-        public TermRule()
-        {
-        }
-
         public NumberRule Number { get; set; }
 
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);

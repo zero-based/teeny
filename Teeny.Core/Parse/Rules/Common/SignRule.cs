@@ -9,10 +9,6 @@ namespace Teeny.Core.Parse.Rules.Common
             Sign.Assign(sign);
         }
 
-        public SignRule()
-        {
-        }
-
         public TerminalNode Sign { get; set; } = new TerminalNode(Token.Plus, Token.Minus);
     }
 }

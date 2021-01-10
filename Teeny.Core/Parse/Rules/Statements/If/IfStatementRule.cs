@@ -15,10 +15,6 @@ namespace Teeny.Core.Parse.Rules.Statements.If
             ExtraIf = extraIf;
         }
 
-        public IfStatementRule()
-        {
-        }
-
         public TerminalNode If { get; set; } = new TerminalNode(Token.If);
         public ConditionStatementRule ConditionStatement { get; set; }
         public TerminalNode Then { get; set; } = new TerminalNode(Token.Then);

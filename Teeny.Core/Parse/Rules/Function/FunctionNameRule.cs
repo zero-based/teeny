@@ -9,10 +9,6 @@ namespace Teeny.Core.Parse.Rules.Function
             Identifier.Assign(identifier);
         }
 
-        public FunctionNameRule()
-        {
-        }
-
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
     }
 }

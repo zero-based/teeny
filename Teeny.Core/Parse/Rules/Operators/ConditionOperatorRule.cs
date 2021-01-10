@@ -9,10 +9,6 @@ namespace Teeny.Core.Parse.Rules.Operators
             Operator.Assign(@operator);
         }
 
-        public ConditionOperatorRule()
-        {
-        }
-
         public TerminalNode Operator { get; set; } =
             new TerminalNode(Token.LessThan, Token.GreaterThan, Token.Equal, Token.NotEqual);
     }

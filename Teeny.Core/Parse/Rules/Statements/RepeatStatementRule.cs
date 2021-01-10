@@ -14,9 +14,6 @@ namespace Teeny.Core.Parse.Rules.Statements
             ConditionStatement = conditionStatement;
         }
 
-        public RepeatStatementRule()
-        {
-        }
 
         public TerminalNode Repeat { get; set; } = new TerminalNode(Token.Repeat);
         public StatementRule Statement { get; set; }

@@ -4,10 +4,6 @@ namespace Teeny.Core.Parse.Rules.Statements.Condition
 {
     public class ExtraConditionRule
     {
-        public ExtraConditionRule()
-        {
-        }
-
         public ExtraConditionRule(BooleanOperatorRule booleanOperator, ConditionRule condition,
             ExtraConditionRule extraCondition)
         {

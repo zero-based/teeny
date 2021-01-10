@@ -7,11 +7,6 @@
             AnyEquation = anyEquation;
             ExtraEquation = extraEquation;
         }
-
-        public EquationRule()
-        {
-        }
-
         public AnyEquationRule AnyEquation { get; set; }
 
         public ExtraEquationRule ExtraEquation { get; set; }

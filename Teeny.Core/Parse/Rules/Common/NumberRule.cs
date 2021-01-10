@@ -15,10 +15,6 @@ namespace Teeny.Core.Parse.Rules.Common
             Number.Assign(number);
         }
 
-        public NumberRule()
-        {
-        }
-
         public SignRule Sign { get; set; }
         public TerminalNode Number { get; set; } = new TerminalNode(Token.ConstantNumber);
     }
