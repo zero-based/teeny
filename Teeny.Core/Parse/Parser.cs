@@ -7,6 +7,8 @@ using Teeny.Core.Parse.Rules.Function;
 using Teeny.Core.Parse.Rules.Function.Arguments;
 using Teeny.Core.Parse.Rules.Function.Parameters;
 using Teeny.Core.Parse.Rules.Statements;
+using Teeny.Core.Parse.Rules.Statements.Condition;
+using Teeny.Core.Parse.Rules.Statements.Declaration;
 using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse
@@ -201,6 +203,79 @@ namespace Teeny.Core.Parse
             var parameter = ParseParameter();
             return parameter != null ?
              TryBuild(() => new ExtraParameterRule(comma, parameter)) : null;
+        }
+
+        private ConditionRule ParseCondition()
+        {
+            var identifier = Match(Token.Identifier);
+            var conditionOperator = Match(Token.LessThan, Token.GreaterThan, Token.Equal, Token.NotEqual);
+            var term = ParseTerm();
+
+            return term != null ? TryBuild(() => new ConditionRule(identifier, conditionOperator, term)) : null;
+        }
+
+        private ExtraConditionRule ParseExtraCondition()
+        {
+            var booleanOperator = Match(Token.And, Token.Or);
+            var condition = ParseCondition();
+            var extraCondition = ParseExtraCondition();
+
+            return (condition != null && extraCondition != null)
+                ? TryBuild(() => new ExtraConditionRule(booleanOperator, condition, extraCondition))
+                : null;
+        }
+
+        private RepeatStatementRule ParseRepeatStatement()
+        {
+            var repeat = Match(Token.Repeat);
+            var statements = ParseStatements();
+            var until = Match(Token.Until);
+            var conditionStatement = ParseConditionStatement();
+
+            return (statements != null && conditionStatement != null)
+                ? TryBuild(() => new RepeatStatementRule(repeat, statements, until, conditionStatement))
+                : null;
+        }
+
+        private WriteStatementRule ParseWriteStatement()
+        {
+            var write = Match(Token.Write);
+            if (CurrentRecord.Token == Token.Endl)
+            {
+                var endl = Match(Token.Endl);
+                var semicolon = Match(Token.Semicolon);
+                return TryBuild(() => new WriteStatementRule(write, endl, semicolon));
+            }
+
+            else
+            {
+                var expression = ParseExpression();
+                var semicolon = Match(Token.Semicolon);
+                return (expression != null)
+                    ? TryBuild(() => new WriteStatementRule(write, expression, semicolon))
+                    : null;
+            }
+        }
+
+        private ConditionStatementRule ParseConditionStatement()
+        {
+            var condition = ParseCondition();
+            var extraCondition = ParseExtraCondition();
+            return (condition != null && extraCondition != null)
+                ? TryBuild(() => new ConditionStatementRule(condition, extraCondition))
+                : null;
+        }
+
+        private DeclarationStatementRule ParseDeclarationStatement()
+        {
+            var dataType = Match(Token.Int, Token.Float, Token.String);
+            var idOrAssignment = ParseIdOrAssignment();
+            var extraIdOrAssign = ParseExtraIdOrAssign();
+            var semicolon = Match(Token.Semicolon);
+
+            return (idOrAssignment != null && extraIdOrAssign != null)
+                ? TryBuild(() => new DeclarationStatementRule(dataType, idOrAssignment, extraIdOrAssign, semicolon))
+                : null;
         }
 
     }
