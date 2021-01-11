@@ -5,6 +5,8 @@ using Teeny.Core.Parse.Rules;
 using Teeny.Core.Parse.Rules.Common;
 using Teeny.Core.Parse.Rules.Function;
 using Teeny.Core.Parse.Rules.Function.Arguments;
+using Teeny.Core.Parse.Rules.Function.Parameters;
+using Teeny.Core.Parse.Rules.Statements;
 using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse
@@ -153,5 +155,53 @@ namespace Teeny.Core.Parse
             }
             return null;
         }
+        private ReadStatementRule ParseRaedStatement()
+        {
+            var read = Match(Token.Read);
+            var identifier = Match(Token.Identifier);
+            var semicolon = Match(Token.Semicolon);
+            return TryBuild(() => new ReadStatementRule(read, identifier, semicolon));
+        }
+        private ReturnStatementRule ParseReturnStatement()
+        {
+            var Return = Match(Token.Return);
+            var expression = ParseExpression();
+            var semicolon = Match(Token.Semicolon);
+            return expression != null ?
+             TryBuild(() => new ReturnStatementRule(Return, expression, semicolon)) : null;
+        }
+        private AssignmentStatementRule ParseAssignmentStatmenet()
+        {
+
+            var identifier = Match(Token.Identifier);
+            var assignment = Match(Token.Assignment);
+            var expression = ParseExpression();
+            var semicolon = Match(Token.Semicolon);
+            return expression != null ?
+                TryBuild(() => new AssignmentStatementRule(identifier, assignment, expression, semicolon)) : null;
+
+        }
+        private ParameterRule ParseParameter()
+        {
+            var dataType = ParseDataType();
+            var identifer = ParseExpression();
+            return identifer != null ?
+             TryBuild(() => new ParameterRule(dataType, identifer)) : null;
+        }
+        private ParametersRule ParseParameters()
+        {
+            var parameter = ParseParameter();
+            var extraParameter = ParseExtraParameter();
+            return parameter != null && extraParameter != null ?
+             TryBuild(() => new ParametersRule(parameter, extraParameter)) : null;
+        }
+        private ExtraParameterRule ParseExtraParameter()
+        {
+            var comma = Match(Token.Comma);
+            var parameter = ParseParameter();
+            return parameter != null ?
+             TryBuild(() => new ExtraParameterRule(comma, parameter)) : null;
+        }
+
     }
 }
