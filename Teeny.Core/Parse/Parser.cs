@@ -57,6 +57,38 @@ namespace Teeny.Core.Parse
         {
             throw new NotImplementedException();
         }
+
+        private TermRule ParseTerm()
+        {
+            if (CurrentRecord.Token == Token.Plus ||
+                CurrentRecord.Token == Token.Minus ||
+                CurrentRecord.Token == Token.ConstantNumber)
+            {
+                var number = ParseNumber();
+                return number != null ? new TermRule(number) : null;
+            }
+
+            var identifier = Match(Token.Identifier);
+            return TryBuild(() => new TermRule(identifier));
+        }
+
+        private NumberRule ParseNumber()
+        {
+            if (CurrentRecord.Token == Token.Plus || CurrentRecord.Token == Token.Minus)
+            {
+                var sign = ParseSign();
+                var number = Match(Token.ConstantNumber);
+                return TryBuild(() => new NumberRule(sign, number));
+            }
+
+            var number2 = Match(Token.ConstantNumber);
+            return TryBuild(() => new NumberRule(number2));
+        }
+
+        private SignRule ParseSign()
+        {
+            var sign = Match(Token.Plus, Token.Minus);
+            return TryBuild(() => new SignRule(sign));
         }
     }
 }
