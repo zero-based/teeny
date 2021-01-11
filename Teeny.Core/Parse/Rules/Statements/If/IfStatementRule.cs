@@ -4,7 +4,7 @@ using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Statements.If
 {
-    public class IfStatementRule : BaseRule
+    public class IfStatementRule : StatementRule
     {
         public IfStatementRule(TokenRecord @if, ConditionStatementRule conditionStatement, TokenRecord then,
             ICollection<StatementRule> statements, ExtraIfRule extraIf)

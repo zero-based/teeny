@@ -4,7 +4,7 @@ using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Statements
 {
-    public class RepeatStatementRule : BaseRule
+    public class RepeatStatementRule : StatementRule
     {
         public RepeatStatementRule(TokenRecord repeat, ICollection<StatementRule> statements, TokenRecord until,
             ConditionStatementRule conditionStatement)

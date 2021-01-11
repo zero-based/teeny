@@ -3,7 +3,7 @@ using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Statements
 {
-    public class AssignmentStatementRule : BaseRule
+    public class AssignmentStatementRule : StatementRule
     {
         public AssignmentStatementRule(TokenRecord identifier, TokenRecord assignmentOperator,
             ExpressionRule expression)

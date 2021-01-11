@@ -2,7 +2,7 @@
 
 namespace Teeny.Core.Parse.Rules.Statements
 {
-    public class ReadStatementRule : BaseRule
+    public class ReadStatementRule : StatementRule
     {
         public ReadStatementRule(TokenRecord read, TokenRecord identifier, TokenRecord semicolon)
         {
