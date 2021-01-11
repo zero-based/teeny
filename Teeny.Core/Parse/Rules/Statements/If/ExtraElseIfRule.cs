@@ -4,10 +4,18 @@ namespace Teeny.Core.Parse.Rules.Statements.If
 {
     public class ExtraElseIfRule : BaseRule
     {
-        public ExtraElseIfRule(ElseIfStatementRule elseIfStatement, ElseStatementRule elseStatement, TokenRecord end)
+        public ExtraElseIfRule(ElseIfStatementRule elseIfStatement)
         {
             ElseIfStatement = elseIfStatement;
+        }
+
+        public ExtraElseIfRule(ElseStatementRule elseStatement)
+        {
             ElseStatement = elseStatement;
+        }
+
+        public ExtraElseIfRule(TokenRecord end)
+        {
             End.Assign(end);
         }
 
