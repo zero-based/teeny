@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Teeny.Core.Parse.Rules;
 using Teeny.Core.Parse.Rules.Common;
+using Teeny.Core.Parse.Rules.Function;
+using Teeny.Core.Parse.Rules.Function.Arguments;
 using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse
@@ -89,6 +91,67 @@ namespace Teeny.Core.Parse
         {
             var sign = Match(Token.Plus, Token.Minus);
             return TryBuild(() => new SignRule(sign));
+        }
+
+        private FunctionBodyRule ParseFunctionBody()
+        {
+            var leftCurlyBracket = Match(Token.CurlyBracketLeft);
+            var statements = ParseStatements();
+            var returnStatement = ParseReturnStatement();
+            var rightCurlyBracket = Match(Token.ParenthesisRight);
+            if (statements != null && returnStatement != null)
+            {
+                return TryBuild(() => new FunctionBodyRule(leftCurlyBracket, statements, returnStatement, rightCurlyBracket));
+            }
+            return null;
+        }
+
+        private FunctionNameRule ParseFunctionName()
+        {
+            var functionName = Match(Token.Identifier);
+            return TryBuild(() => new FunctionNameRule(functionName));
+        }
+
+        private ExtraArgumentRule ParseExtraArgument()
+        {
+            var comma = Match(Token.Comma);
+            var identifier = Match(Token.Identifier);
+            return TryBuild(() => new ExtraArgumentRule(comma, identifier));
+        }
+
+        private ArgumentsRule ParseArgumentRule()
+        {
+            var identifier = Match(Token.Identifier);
+            var extraArgument = ParseExtraArgument();
+            if (extraArgument != null)
+            {
+                return TryBuild(() => new ArgumentsRule(identifier, extraArgument));
+            }
+            return null;
+        }
+
+        private FunctionStatementRule ParseFunctionStatement()
+        {
+            var functionBody = ParseFunctionBody();
+            var functionDeclaration = ParseFunctionDeclaration();
+            if (functionBody != null && functionDeclaration != null)
+            {
+                return TryBuild(() => new FunctionStatementRule(functionDeclaration, functionBody));
+            }
+            return null;
+        }
+
+        private FunctionCallRule ParseFunctionCall()
+        {
+            var identifier = Match(Token.Identifier);
+            var parenthesisLeft = Match(Token.ParenthesisLeft);
+            var arguments = ParseArgumentRule();
+            var parenthesisRight = Match(Token.ParenthesisRight);
+            if (arguments != null)
+            {
+                return TryBuild(() => new FunctionCallRule(identifier, parenthesisLeft, arguments, parenthesisRight));
+            }
+            return null;
         }
     }
 }
