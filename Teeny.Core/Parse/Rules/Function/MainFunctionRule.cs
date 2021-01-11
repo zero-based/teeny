@@ -1,5 +1,4 @@
-﻿using Teeny.Core.Parse.Rules.Common;
-using Teeny.Core.Scan;
+﻿using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Function
 {

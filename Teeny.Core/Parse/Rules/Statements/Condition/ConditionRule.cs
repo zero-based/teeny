@@ -17,7 +17,10 @@ namespace Teeny.Core.Parse.Rules.Statements.Condition
         }
 
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
-        public TerminalNode ConditionOperator { get; set; } = new TerminalNode(Token.LessThan, Token.GreaterThan, Token.Equal, Token.NotEqual);
+
+        public TerminalNode ConditionOperator { get; set; } =
+            new TerminalNode(Token.LessThan, Token.GreaterThan, Token.Equal, Token.NotEqual);
+
         public TermRule Term { get; set; }
     }
 }
