@@ -1,4 +1,5 @@
-﻿using Teeny.Core.Scan;
+﻿using Teeny.Core.Parse.Rules.Common;
+using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {
@@ -9,9 +10,11 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
             Identifier.Assign(identifier);
         }
 
-        public IdOrAssignmentRule(AssignmentStatementRule assignmentStatement)
+        public IdOrAssignmentRule(TokenRecord identifier, TokenRecord assignmentOperator, ExpressionRule expression)
         {
-            AssignmentStatement = assignmentStatement;
+            Identifier.Assign(identifier);
+            AssignmentOperator.Assign(assignmentOperator);
+            Expression = expression;
         }
 
         public IdOrAssignmentRule()
@@ -19,6 +22,7 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
         }
 
         public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
-        public AssignmentStatementRule AssignmentStatement { get; set; }
+        public TerminalNode AssignmentOperator { get; set; } = new TerminalNode(Token.Assignment);
+        public ExpressionRule Expression { get; set; }
     }
 }
