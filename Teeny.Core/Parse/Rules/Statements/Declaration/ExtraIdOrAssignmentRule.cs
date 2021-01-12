@@ -2,22 +2,22 @@
 
 namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {
-    public class ExtraIdOrAssignRule
+    public class ExtraIdOrAssignmentRule
     {
-        public ExtraIdOrAssignRule(TokenRecord comma, IdOrAssignmentRule idOrAssignment,
-            ExtraIdOrAssignRule extraIdOrAssign)
+        public ExtraIdOrAssignmentRule(TokenRecord comma, IdOrAssignmentRule idOrAssignment,
+            ExtraIdOrAssignmentRule extraIdOrAssign)
         {
             Comma.Assign(comma);
             IdOrAssignment = idOrAssignment;
             ExtraIdOrAssign = extraIdOrAssign;
         }
 
-        public ExtraIdOrAssignRule()
+        public ExtraIdOrAssignmentRule()
         {
         }
 
         public TerminalNode Comma { get; set; } = new TerminalNode(Token.Comma);
         public IdOrAssignmentRule IdOrAssignment { get; set; }
-        public ExtraIdOrAssignRule ExtraIdOrAssign { get; set; }
+        public ExtraIdOrAssignmentRule ExtraIdOrAssign { get; set; }
     }
 }

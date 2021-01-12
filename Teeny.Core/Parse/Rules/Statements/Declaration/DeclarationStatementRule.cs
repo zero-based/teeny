@@ -5,11 +5,11 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
     public class DeclarationStatementRule : StatementRule
     {
         public DeclarationStatementRule(TokenRecord dataType, IdOrAssignmentRule idOrAssignment,
-            ExtraIdOrAssignRule extraIdOrAssign, TokenRecord semicolon)
+            ExtraIdOrAssignmentRule extraIdOrAssignment, TokenRecord semicolon)
         {
             DataType.Assign(dataType);
             IdOrAssignment = idOrAssignment;
-            ExtraIdOrAssign = extraIdOrAssign;
+            ExtraIdOrAssignment = extraIdOrAssignment;
             Semicolon.Assign(semicolon);
         }
 
@@ -19,7 +19,7 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
 
         public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
         public IdOrAssignmentRule IdOrAssignment { get; set; }
-        public ExtraIdOrAssignRule ExtraIdOrAssign { get; set; }
+        public ExtraIdOrAssignmentRule ExtraIdOrAssignment { get; set; }
         public TerminalNode Semicolon { get; set; } = new TerminalNode(Token.Semicolon);
     }
 }
