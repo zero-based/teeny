@@ -7,13 +7,13 @@ namespace Teeny.Core.Parse.Rules.Statements.If
     public class IfStatementRule : StatementRule
     {
         public IfStatementRule(TokenRecord @if, ConditionStatementRule conditionStatement, TokenRecord then,
-            ICollection<StatementRule> statements, ExtraIfRule extraIf)
+            ICollection<StatementRule> statements, ExtraElseIfRule extraElseIf)
         {
             If.Assign(@if);
             ConditionStatement = conditionStatement;
             Then.Assign(then);
             Statements = statements;
-            ExtraIf = extraIf;
+            ExtraElseIf = extraElseIf;
         }
 
         public IfStatementRule()
@@ -24,6 +24,6 @@ namespace Teeny.Core.Parse.Rules.Statements.If
         public ConditionStatementRule ConditionStatement { get; set; }
         public TerminalNode Then { get; set; } = new TerminalNode(Token.Then);
         public ICollection<StatementRule> Statements { get; set; }
-        public ExtraIfRule ExtraIf { get; set; }
+        public ExtraElseIfRule ExtraElseIf { get; set; }
     }
 }
