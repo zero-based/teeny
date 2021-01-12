@@ -5,9 +5,9 @@ namespace Teeny.Core.Parse.Rules
 {
     public class ProgramRule : BaseRule
     {
-        public ProgramRule(ICollection<FunctionStatementRule> functionStatement, MainFunctionRule mainFunction)
+        public ProgramRule(ICollection<FunctionStatementRule> functionStatements, MainFunctionRule mainFunction)
         {
-            FunctionStatement = functionStatement;
+            FunctionStatements = functionStatements;
             MainFunction = mainFunction;
         }
 
@@ -15,7 +15,7 @@ namespace Teeny.Core.Parse.Rules
         {
         }
 
-        public ICollection<FunctionStatementRule> FunctionStatement { get; set; }
+        public ICollection<FunctionStatementRule> FunctionStatements { get; set; }
         public MainFunctionRule MainFunction { get; set; }
     }
 }
