@@ -5,13 +5,10 @@ namespace Teeny.Core.Parse.Rules.Equation
 {
     public class EquationRule : BaseRule
     {
-        public EquationRule(TokenRecord parenthesisLeft, EquationRule equation1, TokenRecord arithmeticOperator,
-            EquationRule equation2, TokenRecord parenthesisRight, ExtraEquationRule extraEquation)
+        public EquationRule(TokenRecord parenthesisLeft, EquationRule equation, TokenRecord parenthesisRight, ExtraEquationRule extraEquation)
         {
             ParenthesisLeft.Assign(parenthesisLeft);
-            Equation1 = equation1;
-            ArithmeticOperator.Assign(arithmeticOperator);
-            Equation2 = equation2;
+            Equation = equation;
             ParenthesisRight.Assign(parenthesisRight);
             ExtraEquation = extraEquation;
         }
@@ -27,12 +24,7 @@ namespace Teeny.Core.Parse.Rules.Equation
         }
 
         public TerminalNode ParenthesisLeft { get; set; } = new TerminalNode(Token.ParenthesisLeft);
-        public EquationRule Equation1 { get; set; }
-
-        public TerminalNode ArithmeticOperator { get; set; } =
-            new TerminalNode(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
-
-        public EquationRule Equation2 { get; set; }
+        public EquationRule Equation { get; set; }
         public TerminalNode ParenthesisRight { get; set; } = new TerminalNode(Token.ParenthesisRight);
         public TermRule Term { get; set; }
         public ExtraEquationRule ExtraEquation { get; set; }
