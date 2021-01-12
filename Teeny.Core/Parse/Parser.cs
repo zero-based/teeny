@@ -9,6 +9,7 @@ using Teeny.Core.Parse.Rules.Function.Parameters;
 using Teeny.Core.Parse.Rules.Statements;
 using Teeny.Core.Parse.Rules.Statements.Condition;
 using Teeny.Core.Parse.Rules.Statements.Declaration;
+using Teeny.Core.Parse.Rules.Statements.If;
 using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse
@@ -17,6 +18,8 @@ namespace Teeny.Core.Parse
     {
         private Queue<TokenRecord> _tokensQueue;
         private TokenRecord CurrentRecord => _tokensQueue.Peek();
+        private TokenRecord NextRecord => _tokensQueue.ElementAt(1);
+
         public List<string> ErrorList = new List<string>();
 
         private TokenRecord Match(params Token[] tokens)
@@ -270,13 +273,99 @@ namespace Teeny.Core.Parse
         {
             var dataType = Match(Token.Int, Token.Float, Token.String);
             var idOrAssignment = ParseIdOrAssignment();
-            var extraIdOrAssign = ParseExtraIdOrAssign();
+            var extraIdOrAssign = ParseExtraIdOrAssignment();
             var semicolon = Match(Token.Semicolon);
 
             return (idOrAssignment != null && extraIdOrAssign != null)
                 ? TryBuild(() => new DeclarationStatementRule(dataType, idOrAssignment, extraIdOrAssign, semicolon))
                 : null;
         }
+        
+        private IfStatementRule ParseIfStatement()
+        {
+            var @if = Match(Token.If);
+            var conditionStatement = ParseConditionStatement();
+            var then = Match(Token.Then);
+            var statements = ParseStatements();
+            var extraElseIf = ParseExtraElseIf();
 
+            return conditionStatement != null
+                   && statements != null
+                   && extraElseIf != null
+                ? TryBuild(() => new IfStatementRule(@if, conditionStatement, then, statements, extraElseIf))
+                : null;
+        }
+
+        private ElseIfStatementRule ParseElseIfStatement()
+        {
+            var elseIf = Match(Token.ElseIf);
+            var conditionStatement = ParseConditionStatement();
+            var then = Match(Token.Then);
+            var statements = ParseStatements();
+            var extraElseIf = ParseExtraElseIf();
+
+            return conditionStatement != null
+                   && statements != null
+                   && extraElseIf != null
+                ? TryBuild(() => new ElseIfStatementRule(elseIf, conditionStatement, then, statements, extraElseIf))
+                : null;
+        }
+
+        private ElseStatementRule ParseElseStatement()
+        {
+            var @else = Match(Token.Else);
+            var statements = ParseStatements();
+            var end = Match(Token.End);
+
+            return statements != null
+                ? TryBuild(() => new ElseStatementRule(@else, statements, end))
+                : null;
+        }
+
+        private ExtraElseIfRule ParseExtraElseIf()
+        {
+            switch (CurrentRecord.Token)
+            {
+                case Token.ElseIf:
+                {
+                    var elseIfStatement = ParseElseIfStatement();
+                    return elseIfStatement != null ? new ExtraElseIfRule(elseIfStatement) : null;
+                }
+                case Token.Else:
+                {
+                    var elseStatement = ParseElseIfStatement();
+                    return elseStatement != null ? new ExtraElseIfRule(elseStatement) : null;
+                }
+                default:
+                {
+                    var end = Match(Token.End);
+                    return TryBuild(() => new ExtraElseIfRule(end));
+                }
+            }
+        }
+
+        private IdOrAssignmentRule ParseIdOrAssignment()
+        {
+            if (CurrentRecord.Token == Token.Identifier && NextRecord.Token == Token.Assignment)
+            {
+                var assignmentStatement = ParseAssignmentStatmenet();
+                return assignmentStatement != null ? new IdOrAssignmentRule(assignmentStatement) : null;
+            }
+
+            var identifier = Match(Token.Identifier);
+            return TryBuild(() => new IdOrAssignmentRule(identifier));
+        }
+
+        private ExtraIdOrAssignmentRule ParseExtraIdOrAssignment()
+        {
+            if (CurrentRecord.Token != Token.Comma) return null;
+
+            var comma = Match(Token.Comma);
+            var idOrAssignment = ParseIdOrAssignment();
+            var extraIdOrAssign = ParseExtraIdOrAssignment();
+            return idOrAssignment != null
+                ? TryBuild(() => new ExtraIdOrAssignmentRule(comma, idOrAssignment, extraIdOrAssign))
+                : null;
+        }
     }
 }
