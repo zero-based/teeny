@@ -4,7 +4,7 @@ using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules
 {
-    public class TerminalNode
+    public class TerminalNode : Node
     {
         private readonly ICollection<Token> _validTokens;
 
@@ -14,6 +14,10 @@ namespace Teeny.Core.Parse.Rules
         }
 
         public TokenRecord TokenRecord { get; set; }
+
+        public override string Name => $"{TokenRecord.Lexeme} ({TokenRecord.Token})";
+
+        public override IEnumerable<Node> Children => null;
 
         public void Assign(TokenRecord tokenRecord)
         {
