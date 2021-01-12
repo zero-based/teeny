@@ -366,17 +366,17 @@ namespace Teeny.Core.Parse
 
         private ExpressionRule ParseExpression()
         {
-            if (CurrentRecord.Token != Token.ConstantString)
+            if (CurrentRecord.Token == Token.ConstantString)
             {
                 var @string = Match(Token.ConstantString);
                 return TryBuild(() => new ExpressionRule(@string));
             }
 
             if (CurrentRecord.Token == Token.ParenthesisLeft
-                || NextRecord.Token != Token.Plus
-                || NextRecord.Token != Token.Minus
-                || NextRecord.Token != Token.Multiply
-                || NextRecord.Token != Token.Divide)
+                || NextRecord.Token == Token.Plus
+                || NextRecord.Token == Token.Minus
+                || NextRecord.Token == Token.Multiply
+                || NextRecord.Token == Token.Divide)
             {
                 var equation = ParseEquation();
                 return equation != null ? new ExpressionRule(equation) : null;
