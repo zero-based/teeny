@@ -416,14 +416,12 @@ namespace Teeny.Core.Parse
             if (CurrentRecord.Token == Token.ParenthesisLeft)
             {
                 var leftParenthesis = Match(Token.ParenthesisLeft);
-                var equation1 = ParseEquation();
-                var arithmeticOperator = Match(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
-                var equation2 = ParseEquation();
+                var equation = ParseEquation();
                 var rightParenthesis = Match(Token.ParenthesisRight);
-                var extraEquation1 = ParseExtraEquation();
+                var extraEquation = ParseExtraEquation();
 
-                return equation1 != null && equation2 != null
-                    ? TryBuild(() => new EquationRule(leftParenthesis, equation1, arithmeticOperator, equation2, rightParenthesis, extraEquation1))
+                return equation != null
+                    ? TryBuild(() => new EquationRule(leftParenthesis, equation, rightParenthesis, extraEquation))
                     : null;
             }
 
