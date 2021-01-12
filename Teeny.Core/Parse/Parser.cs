@@ -21,7 +21,7 @@ namespace Teeny.Core.Parse
         private TokenRecord CurrentRecord => _tokensQueue.Peek();
         private TokenRecord NextRecord => _tokensQueue.ElementAt(1);
 
-        public List<string> ErrorList = new List<string>();
+        public List<string> ErrorList;
 
         private TokenRecord Match(params Token[] tokens)
         {
@@ -51,6 +51,8 @@ namespace Teeny.Core.Parse
         public BaseRule Parse(List<TokenRecord> tokens)
         {
             _tokensQueue = new Queue<TokenRecord>(tokens);
+            ErrorList = new List<string>();
+
             try
             {
                 return ParseProgram();
@@ -71,6 +73,12 @@ namespace Teeny.Core.Parse
             {
                 var number = ParseNumber();
                 return number != null ? new TermRule(number) : null;
+            }
+
+            if (NextRecord.Token == Token.ParenthesisLeft)
+            {
+                var functionCall = ParseFunctionCall();
+                return functionCall != null ? new TermRule(functionCall) : null;
             }
 
             var identifier = Match(Token.Identifier);
@@ -98,13 +106,20 @@ namespace Teeny.Core.Parse
 
         private FunctionBodyRule ParseFunctionBody()
         {
-            var leftCurlyBracket = Match(Token.CurlyBracketLeft);
+            var curlyBracketLeft = Match(Token.CurlyBracketLeft);
             var statements = ParseStatements();
-            var returnStatement = ParseReturnStatement();
-            var rightCurlyBracket = Match(Token.ParenthesisRight);
+
+            ReturnStatementRule returnStatement = null;
+            if (statements != null)
+            {
+                returnStatement = statements.Last() as ReturnStatementRule;
+                statements.Remove(returnStatement);
+            }
+
+            var curlyBracketRight = Match(Token.CurlyBracketRight);
 
             return statements != null && returnStatement != null
-                ? TryBuild(() => new FunctionBodyRule(leftCurlyBracket, statements, returnStatement, rightCurlyBracket))
+                ? TryBuild(() => new FunctionBodyRule(curlyBracketLeft, statements, returnStatement, curlyBracketRight))
                 : null;
         }
 
@@ -126,11 +141,13 @@ namespace Teeny.Core.Parse
 
         private FunctionStatementRule ParseFunctionStatement()
         {
-            var functionBody = ParseFunctionBody();
+            if (NextRecord.Token == Token.Main)
+                return null;
+
             var functionDeclaration = ParseFunctionDeclaration();
+            var functionBody = ParseFunctionBody();
 
-
-            return functionBody != null && functionDeclaration != null
+            return  functionDeclaration != null && functionBody != null
                 ? TryBuild(() => new FunctionStatementRule(functionDeclaration, functionBody))
                 : null;
         }
@@ -218,11 +235,15 @@ namespace Teeny.Core.Parse
 
         private ExtraConditionRule ParseExtraCondition()
         {
+            if (CurrentRecord.Token != Token.And &&
+                CurrentRecord.Token != Token.Or) 
+                return null;
+
             var booleanOperator = Match(Token.And, Token.Or);
             var condition = ParseCondition();
             var extraCondition = ParseExtraCondition();
 
-            return condition != null && extraCondition != null
+            return condition != null
                 ? TryBuild(() => new ExtraConditionRule(booleanOperator, condition, extraCondition))
                 : null;
         }
@@ -263,7 +284,7 @@ namespace Teeny.Core.Parse
             var condition = ParseCondition();
             var extraCondition = ParseExtraCondition();
 
-            return condition != null && extraCondition != null
+            return condition != null
                 ? TryBuild(() => new ConditionStatementRule(condition, extraCondition))
                 : null;
         }
@@ -275,7 +296,7 @@ namespace Teeny.Core.Parse
             var extraIdOrAssign = ParseExtraIdOrAssignment();
             var semicolon = Match(Token.Semicolon);
 
-            return idOrAssignment != null && extraIdOrAssign != null
+            return idOrAssignment != null
                 ? TryBuild(() => new DeclarationStatementRule(dataType, idOrAssignment, extraIdOrAssign, semicolon))
                 : null;
         }
@@ -328,7 +349,7 @@ namespace Teeny.Core.Parse
                     }
                 case Token.Else:
                     {
-                        var elseStatement = ParseElseIfStatement();
+                        var elseStatement = ParseElseStatement();
                         return elseStatement != null ? new ExtraElseIfRule(elseStatement) : null;
                     }
                 default:
@@ -470,17 +491,23 @@ namespace Teeny.Core.Parse
 
         private ProgramRule ParseProgram()
         {
+            var functionStatements = ParseFunctionStatements();
+
+            var mainFunction = ParseMainFunction();
+            return mainFunction != null ? new ProgramRule(functionStatements, mainFunction) : null;
+        }
+
+        private ICollection<FunctionStatementRule> ParseFunctionStatements()
+        {
             var functionStatements = new List<FunctionStatementRule>();
             while (true)
             {
-                if (NextRecord.Token == Token.Main) break;
                 var functionStatement = ParseFunctionStatement();
                 if (functionStatement == null) break;
                 functionStatements.Add(functionStatement);
             }
 
-            var mainFunction = ParseMainFunction();
-            return mainFunction != null ? new ProgramRule(functionStatements, mainFunction) : null;
+            return functionStatements.Count != 0 ? functionStatements : null;
         }
 
         private FunctionDeclarationRule ParseFunctionDeclaration()
