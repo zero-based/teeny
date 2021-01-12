@@ -428,5 +428,45 @@ namespace Teeny.Core.Parse
                 ? TryBuild(() => new ExtraEquationRule(arithmeticOperator, equation, extraEquation))
                 : null;
         }
+
+        private StatementRule ParseStatement()
+        {
+            switch (CurrentRecord.Token)
+            {
+                // TODO: Add errors if any statement returned null
+                case Token.Int:
+                case Token.Float:
+                case Token.String:
+                    return ParseDeclarationStatement();
+                case Token.Identifier:
+                    return ParseAssignmentStatement();
+                case Token.If:
+                    return ParseIfStatement();
+                case Token.Repeat:
+                    return ParseRepeatStatement();
+                case Token.Read:
+                    return ParseReadStatement();
+                case Token.Write:
+                    return ParseWriteStatement();
+                case Token.Return:
+                    return ParseReturnStatement();
+                default:
+                    return null;
+            }
+        }
+
+        private ICollection<StatementRule> ParseStatements()
+        {
+            var statements = new List<StatementRule>();
+
+            while (true) 
+            {
+                var statement = ParseStatement();
+                if (statement == null) break;
+                statements.Add(statement);
+            }
+
+            return statements.Count != 0 ? statements : null;
+        }
     }
 }
