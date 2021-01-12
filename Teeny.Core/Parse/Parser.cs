@@ -63,11 +63,6 @@ namespace Teeny.Core.Parse
             }
         }
 
-        private BaseRule ParseProgram()
-        {
-            throw new NotImplementedException();
-        }
-
         private TermRule ParseTerm()
         {
             if (CurrentRecord.Token == Token.Plus ||
@@ -467,6 +462,50 @@ namespace Teeny.Core.Parse
             }
 
             return statements.Count != 0 ? statements : null;
+        }
+
+        private ProgramRule ParseProgram()
+        {
+            var functionStatements = new List<FunctionStatementRule>();
+            while (true)
+            {
+                if (NextRecord.Token == Token.Main) break;
+                var functionStatement = ParseFunctionStatement();
+                if (functionStatement == null) break;
+                functionStatements.Add(functionStatement);
+            }
+
+            var mainFunction = ParseMainFunction();
+            return mainFunction != null ? new ProgramRule(functionStatements, mainFunction) : null;
+        }
+
+        private FunctionDeclarationRule ParseFunctionDeclaration()
+        {
+            var dataType = Match(Token.Int, Token.Float, Token.String);
+            var functionName = Match(Token.Identifier);
+            var leftParenthesis = Match(Token.ParenthesisLeft);
+            var parameters = ParseParameters();
+            var rightParenthesis = Match(Token.ParenthesisRight);
+
+
+            return parameters != null
+                ? TryBuild(() =>
+                    new FunctionDeclarationRule(dataType, functionName, leftParenthesis, parameters, rightParenthesis))
+                : null;
+        }
+
+        private MainFunctionRule ParseMainFunction()
+        {
+            var dataType = Match(Token.Int);
+            var main = Match(Token.Main);
+            var leftParenthesis = Match(Token.ParenthesisLeft);
+            var rightParenthesis = Match(Token.ParenthesisRight);
+            var functionBody = ParseFunctionBody();
+
+            return functionBody != null
+                ? TryBuild(() =>
+                    new MainFunctionRule(dataType, main, leftParenthesis, rightParenthesis, functionBody))
+                : null;
         }
     }
 }
