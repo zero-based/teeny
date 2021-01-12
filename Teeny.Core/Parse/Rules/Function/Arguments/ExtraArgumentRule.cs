@@ -2,7 +2,7 @@
 
 namespace Teeny.Core.Parse.Rules.Function.Arguments
 {
-    public class ExtraArgumentRule
+    public class ExtraArgumentRule : BaseRule
     {
         public ExtraArgumentRule(TokenRecord comma, TokenRecord identifier)
         {

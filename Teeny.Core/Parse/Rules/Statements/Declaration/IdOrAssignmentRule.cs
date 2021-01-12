@@ -2,7 +2,7 @@
 
 namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {
-    public class IdOrAssignmentRule
+    public class IdOrAssignmentRule : BaseRule
     {
         public IdOrAssignmentRule(TokenRecord identifier)
         {

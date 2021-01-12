@@ -2,7 +2,7 @@
 
 namespace Teeny.Core.Parse.Rules.Statements.Condition
 {
-    public class ExtraConditionRule
+    public class ExtraConditionRule : BaseRule
     {
         public ExtraConditionRule()
         {

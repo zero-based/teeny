@@ -2,7 +2,7 @@
 
 namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {
-    public class ExtraIdOrAssignmentRule
+    public class ExtraIdOrAssignmentRule : BaseRule
     {
         public ExtraIdOrAssignmentRule(TokenRecord comma, IdOrAssignmentRule idOrAssignment,
             ExtraIdOrAssignmentRule extraIdOrAssign)
