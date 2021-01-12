@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Teeny.Core.Parse.Rules;
 using Teeny.Core.Parse.Rules.Common;
+using Teeny.Core.Parse.Rules.Equation;
 using Teeny.Core.Parse.Rules.Function;
 using Teeny.Core.Parse.Rules.Function.Arguments;
 using Teeny.Core.Parse.Rules.Function.Parameters;
@@ -365,6 +366,66 @@ namespace Teeny.Core.Parse
 
             return idOrAssignment != null
                 ? TryBuild(() => new ExtraIdOrAssignmentRule(comma, idOrAssignment, extraIdOrAssign))
+                : null;
+        }
+
+        private ExpressionRule ParseExpression()
+        {
+            if (CurrentRecord.Token != Token.ConstantString)
+            {
+                var @string = Match(Token.ConstantString);
+                return TryBuild(() => new ExpressionRule(@string));
+            }
+
+            if (CurrentRecord.Token == Token.ParenthesisLeft
+                || NextRecord.Token != Token.Plus
+                || NextRecord.Token != Token.Minus
+                || NextRecord.Token != Token.Multiply
+                || NextRecord.Token != Token.Divide)
+            {
+                var equation = ParseEquation();
+                return equation != null ? new ExpressionRule(equation) : null;
+            }
+
+            var term = ParseTerm();
+            return term != null ? new ExpressionRule(term) : null;
+        }
+
+        private EquationRule ParseEquation()
+        {
+            if (CurrentRecord.Token == Token.ParenthesisLeft)
+            {
+                var leftParenthesis = Match(Token.ParenthesisLeft);
+                var equation1 = ParseEquation();
+                var arithmeticOperator = Match(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
+                var equation2 = ParseEquation();
+                var rightParenthesis = Match(Token.ParenthesisRight);
+                var extraEquation1 = ParseExtraEquation();
+
+                return equation1 != null && equation2 != null 
+                    ? TryBuild(() => new EquationRule(leftParenthesis, equation1, arithmeticOperator, equation2, rightParenthesis, extraEquation1)) 
+                    : null;
+            }
+
+            var term = ParseTerm();
+            var extraEquation2 = ParseExtraEquation();
+            return term != null ? new EquationRule(term, extraEquation2) : null;
+        }
+
+        private ExtraEquationRule ParseExtraEquation()
+        {
+            // TODO: Create tokens groups to reuse
+            if (CurrentRecord.Token != Token.Plus
+                && CurrentRecord.Token != Token.Minus 
+                && CurrentRecord.Token != Token.Multiply
+                && CurrentRecord.Token != Token.Divide) return null;
+
+            var arithmeticOperator = Match(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
+            var equation = ParseEquation();
+            var extraEquation = ParseExtraEquation();
+
+            return equation != null 
+                ? TryBuild(() => new ExtraEquationRule(arithmeticOperator, equation, extraEquation))
                 : null;
         }
     }
