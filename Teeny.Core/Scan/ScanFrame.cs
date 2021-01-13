@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Teeny.Core.Scan
 {
@@ -14,5 +15,20 @@ namespace Teeny.Core.Scan
         public char LookBack { get; }
         public char Center { get; }
         public char LookAhead { get; }
+
+        public override string ToString()
+        {
+            return $"{LookBack}{Center}{LookAhead}";
+        }
+
+        public bool Matches(string pattern)
+        {
+            return Regex.IsMatch(ToString(), pattern);
+        }
+
+        public bool CenterMatches(string pattern)
+        {
+            return Regex.IsMatch(Center.ToString(), pattern);
+        }
     }
 }
