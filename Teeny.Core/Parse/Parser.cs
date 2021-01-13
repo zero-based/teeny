@@ -143,15 +143,20 @@ namespace Teeny.Core.Parse
 
         private ArgumentsRule ParseArgumentRule()
         {
-            var identifier = Match(Token.Identifier);
+            var identifier = Match(Token.Identifier, Token.ConstantString, Token.ConstantNumber);
+           
+            if (CurrentRecord.Token == Token.Comma)
+            {
             var extraArgument = ParseExtraArgument();
 
             Validate(new Dictionary<string, BaseRule>
             {
                 {nameof(extraArgument), extraArgument}
             });
-
             return new ArgumentsRule(identifier, extraArgument);
+            }
+
+            return new ArgumentsRule(identifier);
         }
 
         private FunctionStatementRule ParseFunctionStatement()
