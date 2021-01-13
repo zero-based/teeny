@@ -1,18 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Teeny.Core.Scan;
+﻿using Teeny.Core.Scan;
 
 namespace Teeny.Core.Parse.Rules.Function.Arguments
 {
     public class ArgumentsRule : BaseRule
     {
-        public ArgumentsRule(TokenRecord identifier)
+        public ArgumentsRule(TokenRecord argument, ExtraArgumentRule extraArgument)
         {
-            Identifier.Assign(identifier);
-        }
-
-        public ArgumentsRule(TokenRecord identifier, ExtraArgumentRule extraArgument)
-        {
-            Identifier.Assign(identifier);
+            Argument.Assign(argument);
             ExtraArgument = extraArgument;
         }
 
@@ -20,7 +14,7 @@ namespace Teeny.Core.Parse.Rules.Function.Arguments
         {
         }
 
-        public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier, Token.ConstantString, Token.ConstantNumber);
+        public TerminalNode Argument { get; set; } = new TerminalNode(Token.Identifier, Token.ConstantString, Token.ConstantNumber);
         public ExtraArgumentRule ExtraArgument { get; set; }
     }
 }

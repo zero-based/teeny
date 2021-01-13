@@ -136,27 +136,24 @@ namespace Teeny.Core.Parse
 
         private ExtraArgumentRule ParseExtraArgument()
         {
+            if (CurrentRecord.Token != Token.Comma) return null;
+
             var comma = Match(Token.Comma);
             var identifier = Match(Token.Identifier);
             return new ExtraArgumentRule(comma, identifier);
         }
 
-        private ArgumentsRule ParseArgumentRule()
+        private ArgumentsRule ParseArgumentsRule()
         {
-            var identifier = Match(Token.Identifier, Token.ConstantString, Token.ConstantNumber);
-           
-            if (CurrentRecord.Token == Token.Comma)
-            {
+            if (CurrentRecord.Token != Token.Identifier
+                && CurrentRecord.Token != Token.ConstantString
+                && CurrentRecord.Token != Token.ConstantNumber)
+                return null;
+
+            var argument = Match(Token.Identifier, Token.ConstantString, Token.ConstantNumber);
             var extraArgument = ParseExtraArgument();
 
-            Validate(new Dictionary<string, BaseRule>
-            {
-                {nameof(extraArgument), extraArgument}
-            });
-            return new ArgumentsRule(identifier, extraArgument);
-            }
-
-            return new ArgumentsRule(identifier);
+            return new ArgumentsRule(argument, extraArgument);
         }
 
         private FunctionStatementRule ParseFunctionStatement()
@@ -180,13 +177,8 @@ namespace Teeny.Core.Parse
         {
             var identifier = Match(Token.Identifier);
             var parenthesisLeft = Match(Token.ParenthesisLeft);
-            var arguments = ParseArgumentRule();
+            var arguments = ParseArgumentsRule();
             var parenthesisRight = Match(Token.ParenthesisRight);
-
-            Validate(new Dictionary<string, BaseRule>
-            {
-                {nameof(arguments), arguments}
-            });
 
             return new FunctionCallRule(identifier, parenthesisLeft, arguments, parenthesisRight);
         }
