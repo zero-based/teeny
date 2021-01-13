@@ -18,10 +18,11 @@ namespace Teeny.Core.Parse
     public class Parser
     {
         private Queue<TokenRecord> _tokensQueue;
-        private TokenRecord CurrentRecord => _tokensQueue.Peek();
-        private TokenRecord NextRecord => _tokensQueue.ElementAt(1);
 
         public List<string> ErrorList;
+        public ProgramRule ProgramRoot;
+        private TokenRecord CurrentRecord => _tokensQueue.Peek();
+        private TokenRecord NextRecord => _tokensQueue.ElementAt(1);
 
         private TokenRecord Match(params Token[] tokens)
         {
@@ -32,36 +33,39 @@ namespace Teeny.Core.Parse
                 return tokenRecord;
             }
 
-            ErrorList.Add($"Expected ${string.Join("or", tokens)} , found {CurrentRecord.Lexeme}");
-            return null;
+            if (tokens.Contains(NextRecord.Token))
+            {
+                _tokensQueue.Dequeue();
+                var tokenRecord = CurrentRecord;
+                _tokensQueue.Dequeue();
+                return tokenRecord;
+            }
+
+            ErrorList.Add($"Expected {string.Join("or", tokens)}: found {CurrentRecord.Lexeme}");
+
+            return new TokenRecord {Lexeme = "", Token = tokens[0]};
         }
 
-        private static T TryBuild<T>(Func<T> ruleBuilder)
+        private void Validate(Dictionary<string, BaseRule> map)
         {
-            try
-            {
-                return ruleBuilder();
-            }
-            catch (Exception)
-            {
-                return default;
-            }
+            foreach (var (key, value) in map)
+                if (value == null)
+                    ErrorList.Add($"Missing {key}");
         }
 
-        public BaseRule Parse(List<TokenRecord> tokens)
+        public void Parse(List<TokenRecord> tokens)
         {
             _tokensQueue = new Queue<TokenRecord>(tokens);
             ErrorList = new List<string>();
 
             try
             {
-                return ParseProgram();
+                ProgramRoot = ParseProgram();
             }
             catch (InvalidOperationException e)
             {
                 // End of code!
                 Console.WriteLine(e);
-                return null;
             }
         }
 
@@ -72,7 +76,11 @@ namespace Teeny.Core.Parse
                 CurrentRecord.Token == Token.ConstantNumber)
             {
                 var number = ParseNumber();
-                return number != null ? new TermRule(number) : null;
+                Validate(new Dictionary<string, BaseRule>
+                {
+                    {nameof(number), number}
+                });
+                return new TermRule(number);
             }
 
             if (NextRecord.Token == Token.ParenthesisLeft)
@@ -82,7 +90,7 @@ namespace Teeny.Core.Parse
             }
 
             var identifier = Match(Token.Identifier);
-            return TryBuild(() => new TermRule(identifier));
+            return new TermRule(identifier);
         }
 
         private NumberRule ParseNumber()
@@ -91,17 +99,17 @@ namespace Teeny.Core.Parse
             {
                 var sign = ParseSign();
                 var number = Match(Token.ConstantNumber);
-                return TryBuild(() => new NumberRule(sign, number));
+                return new NumberRule(sign, number);
             }
 
             var number2 = Match(Token.ConstantNumber);
-            return TryBuild(() => new NumberRule(number2));
+            return new NumberRule(number2);
         }
 
         private SignRule ParseSign()
         {
             var sign = Match(Token.Plus, Token.Minus);
-            return TryBuild(() => new SignRule(sign));
+            return new SignRule(sign);
         }
 
         private FunctionBodyRule ParseFunctionBody()
@@ -118,25 +126,32 @@ namespace Teeny.Core.Parse
 
             var curlyBracketRight = Match(Token.CurlyBracketRight);
 
-            return returnStatement != null
-                ? TryBuild(() => new FunctionBodyRule(curlyBracketLeft, statements, returnStatement, curlyBracketRight))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(returnStatement), returnStatement}
+            });
+
+            return new FunctionBodyRule(curlyBracketLeft, statements, returnStatement, curlyBracketRight);
         }
 
         private ExtraArgumentRule ParseExtraArgument()
         {
             var comma = Match(Token.Comma);
             var identifier = Match(Token.Identifier);
-            return TryBuild(() => new ExtraArgumentRule(comma, identifier));
+            return new ExtraArgumentRule(comma, identifier);
         }
 
         private ArgumentsRule ParseArgumentRule()
         {
             var identifier = Match(Token.Identifier);
             var extraArgument = ParseExtraArgument();
-            return extraArgument != null
-                ? TryBuild(() => new ArgumentsRule(identifier, extraArgument))
-                : null;
+
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(extraArgument), extraArgument}
+            });
+
+            return new ArgumentsRule(identifier, extraArgument);
         }
 
         private FunctionStatementRule ParseFunctionStatement()
@@ -147,9 +162,13 @@ namespace Teeny.Core.Parse
             var functionDeclaration = ParseFunctionDeclaration();
             var functionBody = ParseFunctionBody();
 
-            return  functionDeclaration != null && functionBody != null
-                ? TryBuild(() => new FunctionStatementRule(functionDeclaration, functionBody))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(functionDeclaration), functionDeclaration},
+                {nameof(functionBody), functionBody}
+            });
+
+            return new FunctionStatementRule(functionDeclaration, functionBody);
         }
 
         private FunctionCallRule ParseFunctionCall()
@@ -158,9 +177,13 @@ namespace Teeny.Core.Parse
             var parenthesisLeft = Match(Token.ParenthesisLeft);
             var arguments = ParseArgumentRule();
             var parenthesisRight = Match(Token.ParenthesisRight);
-            return arguments != null
-                ? TryBuild(() => new FunctionCallRule(identifier, parenthesisLeft, arguments, parenthesisRight))
-                : null;
+
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(arguments), arguments}
+            });
+
+            return new FunctionCallRule(identifier, parenthesisLeft, arguments, parenthesisRight);
         }
 
         private ReadStatementRule ParseReadStatement()
@@ -168,7 +191,8 @@ namespace Teeny.Core.Parse
             var read = Match(Token.Read);
             var identifier = Match(Token.Identifier);
             var semicolon = Match(Token.Semicolon);
-            return TryBuild(() => new ReadStatementRule(read, identifier, semicolon));
+
+            return new ReadStatementRule(read, identifier, semicolon);
         }
 
         private ReturnStatementRule ParseReturnStatement()
@@ -177,29 +201,34 @@ namespace Teeny.Core.Parse
             var expression = ParseExpression();
             var semicolon = Match(Token.Semicolon);
 
-            return expression != null
-                ? TryBuild(() => new ReturnStatementRule(@return, expression, semicolon))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(expression), expression}
+            });
+
+            return new ReturnStatementRule(@return, expression, semicolon);
         }
 
         private AssignmentStatementRule ParseAssignmentStatement()
         {
-
             var identifier = Match(Token.Identifier);
             var assignment = Match(Token.Assignment);
             var expression = ParseExpression();
             var semicolon = Match(Token.Semicolon);
 
-            return expression != null
-                ? TryBuild(() => new AssignmentStatementRule(identifier, assignment, expression, semicolon))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(expression), expression}
+            });
+
+            return new AssignmentStatementRule(identifier, assignment, expression, semicolon);
         }
 
         private ParameterRule ParseParameter()
         {
             var dataType = Match(Token.Int, Token.Float, Token.String);
             var identifier = Match(Token.Identifier);
-            return TryBuild(() => new ParameterRule(dataType, identifier));
+            return new ParameterRule(dataType, identifier);
         }
 
         private ParametersRule ParseParameters()
@@ -212,21 +241,27 @@ namespace Teeny.Core.Parse
             var parameter = ParseParameter();
             var extraParameter = ParseExtraParameter();
 
-            return parameter != null
-                ? TryBuild(() => new ParametersRule(parameter, extraParameter))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(parameter), parameter}
+            });
+
+            return new ParametersRule(parameter, extraParameter);
         }
 
         private ExtraParameterRule ParseExtraParameter()
         {
-            if (CurrentRecord.Token != Token.Comma) return null;
-
+            if (CurrentRecord.Token != Token.Comma)
+                return null;
             var comma = Match(Token.Comma);
             var parameter = ParseParameter();
 
-            return parameter != null
-                ? TryBuild(() => new ExtraParameterRule(comma, parameter))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(parameter), parameter}
+            });
+
+            return new ExtraParameterRule(comma, parameter);
         }
 
         private ConditionRule ParseCondition()
@@ -235,24 +270,30 @@ namespace Teeny.Core.Parse
             var conditionOperator = Match(Token.LessThan, Token.GreaterThan, Token.Equal, Token.NotEqual);
             var term = ParseTerm();
 
-            return term != null
-                ? TryBuild(() => new ConditionRule(identifier, conditionOperator, term))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(term), term}
+            });
+
+            return new ConditionRule(identifier, conditionOperator, term);
         }
 
         private ExtraConditionRule ParseExtraCondition()
         {
             if (CurrentRecord.Token != Token.And &&
-                CurrentRecord.Token != Token.Or) 
+                CurrentRecord.Token != Token.Or)
                 return null;
 
             var booleanOperator = Match(Token.And, Token.Or);
             var condition = ParseCondition();
             var extraCondition = ParseExtraCondition();
 
-            return condition != null
-                ? TryBuild(() => new ExtraConditionRule(booleanOperator, condition, extraCondition))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(condition), condition}
+            });
+
+            return new ExtraConditionRule(booleanOperator, condition, extraCondition);
         }
 
         private RepeatStatementRule ParseRepeatStatement()
@@ -262,9 +303,12 @@ namespace Teeny.Core.Parse
             var until = Match(Token.Until);
             var conditionStatement = ParseConditionStatement();
 
-            return conditionStatement != null
-                ? TryBuild(() => new RepeatStatementRule(repeat, statements, until, conditionStatement))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(conditionStatement), conditionStatement}
+            });
+
+            return new RepeatStatementRule(repeat, statements, until, conditionStatement);
         }
 
         private WriteStatementRule ParseWriteStatement()
@@ -274,15 +318,19 @@ namespace Teeny.Core.Parse
             {
                 var endl = Match(Token.Endl);
                 var semicolon = Match(Token.Semicolon);
-                return TryBuild(() => new WriteStatementRule(write, endl, semicolon));
+                return new WriteStatementRule(write, endl, semicolon);
             }
             else
             {
                 var expression = ParseExpression();
                 var semicolon = Match(Token.Semicolon);
-                return expression != null
-                    ? TryBuild(() => new WriteStatementRule(write, expression, semicolon))
-                    : null;
+
+                Validate(new Dictionary<string, BaseRule>
+                {
+                    {nameof(expression), expression}
+                });
+
+                return new WriteStatementRule(write, expression, semicolon);
             }
         }
 
@@ -291,9 +339,12 @@ namespace Teeny.Core.Parse
             var condition = ParseCondition();
             var extraCondition = ParseExtraCondition();
 
-            return condition != null
-                ? TryBuild(() => new ConditionStatementRule(condition, extraCondition))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(condition), condition}
+            });
+
+            return new ConditionStatementRule(condition, extraCondition);
         }
 
         private DeclarationStatementRule ParseDeclarationStatement()
@@ -303,9 +354,12 @@ namespace Teeny.Core.Parse
             var extraIdOrAssign = ParseExtraIdOrAssignment();
             var semicolon = Match(Token.Semicolon);
 
-            return idOrAssignment != null
-                ? TryBuild(() => new DeclarationStatementRule(dataType, idOrAssignment, extraIdOrAssign, semicolon))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(idOrAssignment), idOrAssignment}
+            });
+
+            return new DeclarationStatementRule(dataType, idOrAssignment, extraIdOrAssign, semicolon);
         }
 
         private IfStatementRule ParseIfStatement()
@@ -316,9 +370,13 @@ namespace Teeny.Core.Parse
             var statements = ParseStatements();
             var extraElseIf = ParseExtraElseIf();
 
-            return conditionStatement != null && extraElseIf != null
-                ? TryBuild(() => new IfStatementRule(@if, conditionStatement, then, statements, extraElseIf))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(conditionStatement), conditionStatement},
+                {nameof(extraElseIf), extraElseIf}
+            });
+
+            return new IfStatementRule(@if, conditionStatement, then, statements, extraElseIf);
         }
 
         private ElseIfStatementRule ParseElseIfStatement()
@@ -329,9 +387,13 @@ namespace Teeny.Core.Parse
             var statements = ParseStatements();
             var extraElseIf = ParseExtraElseIf();
 
-            return conditionStatement != null && extraElseIf != null
-                ? TryBuild(() => new ElseIfStatementRule(elseIf, conditionStatement, then, statements, extraElseIf))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(conditionStatement), conditionStatement},
+                {nameof(extraElseIf), extraElseIf}
+            });
+
+            return new ElseIfStatementRule(elseIf, conditionStatement, then, statements, extraElseIf);
         }
 
         private ElseStatementRule ParseElseStatement()
@@ -340,7 +402,7 @@ namespace Teeny.Core.Parse
             var statements = ParseStatements();
             var end = Match(Token.End);
 
-            return TryBuild(() => new ElseStatementRule(@else, statements, end));
+            return new ElseStatementRule(@else, statements, end);
         }
 
         private ExtraElseIfRule ParseExtraElseIf()
@@ -348,20 +410,20 @@ namespace Teeny.Core.Parse
             switch (CurrentRecord.Token)
             {
                 case Token.ElseIf:
-                    {
-                        var elseIfStatement = ParseElseIfStatement();
-                        return elseIfStatement != null ? new ExtraElseIfRule(elseIfStatement) : null;
-                    }
+                {
+                    var elseIfStatement = ParseElseIfStatement();
+                    return elseIfStatement != null ? new ExtraElseIfRule(elseIfStatement) : null;
+                }
                 case Token.Else:
-                    {
-                        var elseStatement = ParseElseStatement();
-                        return elseStatement != null ? new ExtraElseIfRule(elseStatement) : null;
-                    }
+                {
+                    var elseStatement = ParseElseStatement();
+                    return elseStatement != null ? new ExtraElseIfRule(elseStatement) : null;
+                }
                 default:
-                    {
-                        var end = Match(Token.End);
-                        return TryBuild(() => new ExtraElseIfRule(end));
-                    }
+                {
+                    var end = Match(Token.End);
+                    return new ExtraElseIfRule(end);
+                }
             }
         }
 
@@ -372,13 +434,18 @@ namespace Teeny.Core.Parse
                 var identifier = Match(Token.Identifier);
                 var assignment = Match(Token.Assignment);
                 var expression = ParseExpression();
-                return expression != null
-                    ? TryBuild(() => new IdOrAssignmentRule(identifier, assignment, expression))
-                    : null;
+
+                Validate(new Dictionary<string, BaseRule>
+                {
+                    {nameof(expression), expression}
+                });
+
+                return new IdOrAssignmentRule(identifier, assignment, expression);
             }
 
             var identifier2 = Match(Token.Identifier);
-            return TryBuild(() => new IdOrAssignmentRule(identifier2));
+
+            return new IdOrAssignmentRule(identifier2);
         }
 
         private ExtraIdOrAssignmentRule ParseExtraIdOrAssignment()
@@ -389,9 +456,12 @@ namespace Teeny.Core.Parse
             var idOrAssignment = ParseIdOrAssignment();
             var extraIdOrAssign = ParseExtraIdOrAssignment();
 
-            return idOrAssignment != null
-                ? TryBuild(() => new ExtraIdOrAssignmentRule(comma, idOrAssignment, extraIdOrAssign))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(idOrAssignment), idOrAssignment}
+            });
+
+            return new ExtraIdOrAssignmentRule(comma, idOrAssignment, extraIdOrAssign);
         }
 
         private ExpressionRule ParseExpression()
@@ -399,7 +469,7 @@ namespace Teeny.Core.Parse
             if (CurrentRecord.Token == Token.ConstantString)
             {
                 var @string = Match(Token.ConstantString);
-                return TryBuild(() => new ExpressionRule(@string));
+                return new ExpressionRule(@string);
             }
 
             if (CurrentRecord.Token == Token.ParenthesisLeft
@@ -425,9 +495,12 @@ namespace Teeny.Core.Parse
                 var rightParenthesis = Match(Token.ParenthesisRight);
                 var extraEquation = ParseExtraEquation();
 
-                return equation != null
-                    ? TryBuild(() => new EquationRule(leftParenthesis, equation, rightParenthesis, extraEquation))
-                    : null;
+                Validate(new Dictionary<string, BaseRule>
+                {
+                    {nameof(equation), equation}
+                });
+
+                return new EquationRule(leftParenthesis, equation, rightParenthesis, extraEquation);
             }
 
             var term = ParseTerm();
@@ -447,9 +520,12 @@ namespace Teeny.Core.Parse
             var equation = ParseEquation();
             var extraEquation = ParseExtraEquation();
 
-            return equation != null
-                ? TryBuild(() => new ExtraEquationRule(arithmeticOperator, equation, extraEquation))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(equation), equation}
+            });
+
+            return new ExtraEquationRule(arithmeticOperator, equation, extraEquation);
         }
 
         private StatementRule ParseStatement()
@@ -503,7 +579,6 @@ namespace Teeny.Core.Parse
         private ICollection<FunctionStatementRule> ParseFunctionStatements()
         {
             var functionStatements = new List<FunctionStatementRule>();
-
             while (true)
             {
                 var functionStatement = ParseFunctionStatement();
@@ -522,10 +597,7 @@ namespace Teeny.Core.Parse
             var parameters = ParseParameters();
             var rightParenthesis = Match(Token.ParenthesisRight);
 
-            return parameters != null
-                ? TryBuild(() =>
-                    new FunctionDeclarationRule(dataType, functionName, leftParenthesis, parameters, rightParenthesis))
-                : null;
+            return new FunctionDeclarationRule(dataType, functionName, leftParenthesis, parameters, rightParenthesis);
         }
 
         private MainFunctionRule ParseMainFunction()
@@ -536,10 +608,12 @@ namespace Teeny.Core.Parse
             var rightParenthesis = Match(Token.ParenthesisRight);
             var functionBody = ParseFunctionBody();
 
-            return functionBody != null
-                ? TryBuild(() =>
-                    new MainFunctionRule(dataType, main, leftParenthesis, rightParenthesis, functionBody))
-                : null;
+            Validate(new Dictionary<string, BaseRule>
+            {
+                {nameof(functionBody), functionBody}
+            });
+
+            return new MainFunctionRule(dataType, main, leftParenthesis, rightParenthesis, functionBody);
         }
     }
 }
