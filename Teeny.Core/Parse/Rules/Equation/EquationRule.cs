@@ -5,7 +5,8 @@ namespace Teeny.Core.Parse.Rules.Equation
 {
     public class EquationRule : BaseRule
     {
-        public EquationRule(TokenRecord parenthesisLeft, EquationRule equation, TokenRecord parenthesisRight, ExtraEquationRule extraEquation)
+        public EquationRule(TokenRecord parenthesisLeft, EquationRule equation, TokenRecord parenthesisRight,
+            ExtraEquationRule extraEquation)
         {
             ParenthesisLeft.Assign(parenthesisLeft);
             Equation = equation;
