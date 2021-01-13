@@ -17,8 +17,8 @@ namespace Teeny.Core.Tests.Builders
                 }
             };
         }
-        
-        public static TerminalNode Of(string lexeme, Token token)
+
+        public static TerminalNode Of(Token token, string lexeme)
         {
             return new TerminalNode
             {

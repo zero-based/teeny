@@ -32,7 +32,7 @@ namespace Teeny.Core.Tests.Builders
                             {
                                 Number = new NumberRule
                                 {
-                                    Number = TerminalNodeBuilder.Of("0", Token.ConstantNumber)
+                                    Number = TerminalNodeBuilder.Of(Token.ConstantNumber, "0")
                                 }
                             }
                         },

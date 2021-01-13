@@ -7,13 +7,13 @@ namespace Teeny.Core.Tests.Builders
     public class ProgramBuilder
     {
         private readonly ProgramRule _programRule;
+        public ProgramRule Build => _programRule;
 
         public ProgramBuilder()
         {
-            _programRule = new ProgramRule {FunctionStatements = new List<FunctionStatementRule>()};
+            _programRule = new ProgramRule();
         }
 
-        public ProgramRule Build => _programRule;
 
         public ProgramBuilder WithMain(MainFunctionRule mainFunctionRule)
         {
@@ -21,9 +21,9 @@ namespace Teeny.Core.Tests.Builders
             return this;
         }
 
-        public ProgramBuilder WithFunctionStatement(FunctionStatementRule functionStatementRule)
+        public ProgramBuilder WithFunctionStatement(ICollection<FunctionStatementRule> functionStatements)
         {
-            _programRule.FunctionStatements.Add(functionStatementRule);
+            _programRule.FunctionStatements = functionStatements;
             return this;
         }
     }

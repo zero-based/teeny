@@ -2,7 +2,6 @@
 using DeepEqual.Syntax;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Teeny.Core.Parse;
-using Teeny.Core.Parse.Rules;
 using Teeny.Core.Parse.Rules.Common;
 using Teeny.Core.Parse.Rules.Equation;
 using Teeny.Core.Parse.Rules.Statements;
@@ -66,9 +65,8 @@ namespace Teeny.Core.Tests
                 new TokenRecord {Lexeme = "}", Token = Token.CurlyBracketRight}
             };
 
-            var expectedProgram = new ProgramRule
-            {
-                MainFunction = new MainFunctionBuilder()
+            var expectedProgram = new ProgramBuilder()
+                .WithMain(new MainFunctionBuilder()
                     .WithStatements(
                         new List<StatementRule>
                         {
@@ -77,19 +75,13 @@ namespace Teeny.Core.Tests
                                 DataType = TerminalNodeBuilder.Of(Token.Float),
                                 IdOrAssignment = new IdOrAssignmentRule
                                 {
-                                    Identifier = TerminalNodeBuilder.Of("z1", Token.Identifier),
+                                    Identifier = TerminalNodeBuilder.Of(Token.Identifier, "z1"),
                                     AssignmentOperator = TerminalNodeBuilder.Of(Token.Assignment),
                                     Expression = new ExpressionRule
                                     {
                                         Equation = new EquationRule
                                         {
-                                            Term = new TermRule
-                                            {
-                                                Number = new NumberRule
-                                                {
-                                                    Number = TerminalNodeBuilder.Of("3", Token.ConstantNumber)
-                                                }
-                                            },
+                                            Term = new TermBuilder().AsNumber("3").Build,
                                             ExtraEquation = new ExtraEquationRule
                                             {
                                                 ArithmeticOperator = TerminalNodeBuilder.Of(Token.Multiply),
@@ -98,27 +90,13 @@ namespace Teeny.Core.Tests
                                                     ParenthesisLeft = TerminalNodeBuilder.Of(Token.ParenthesisLeft),
                                                     Equation = new EquationRule
                                                     {
-                                                        Term = new TermRule
-                                                        {
-                                                            Number = new NumberRule
-                                                            {
-                                                                Number = TerminalNodeBuilder.Of("2",
-                                                                    Token.ConstantNumber)
-                                                            }
-                                                        },
+                                                        Term = new TermBuilder().AsNumber("2").Build,
                                                         ExtraEquation = new ExtraEquationRule
                                                         {
                                                             ArithmeticOperator = TerminalNodeBuilder.Of(Token.Plus),
                                                             Equation = new EquationRule
                                                             {
-                                                                Term = new TermRule
-                                                                {
-                                                                    Number = new NumberRule
-                                                                    {
-                                                                        Number = TerminalNodeBuilder.Of("1",
-                                                                            Token.ConstantNumber)
-                                                                    }
-                                                                }
+                                                                Term = new TermBuilder().AsNumber("1").Build
                                                             }
                                                         }
                                                     },
@@ -128,14 +106,7 @@ namespace Teeny.Core.Tests
                                                         ArithmeticOperator = TerminalNodeBuilder.Of(Token.Minus),
                                                         Equation = new EquationRule
                                                         {
-                                                            Term = new TermRule
-                                                            {
-                                                                Number = new NumberRule
-                                                                {
-                                                                    Number = TerminalNodeBuilder.Of("5.5",
-                                                                        Token.ConstantNumber)
-                                                                }
-                                                            }
+                                                            Term = new TermBuilder().AsNumber("5.5").Build
                                                         }
                                                     }
                                                 }
@@ -152,15 +123,9 @@ namespace Teeny.Core.Tests
                                 {
                                     Condition = new ConditionRule
                                     {
-                                        Identifier = TerminalNodeBuilder.Of("z1", Token.Identifier),
+                                        Identifier = TerminalNodeBuilder.Of(Token.Identifier, "z1"),
                                         ConditionOperator = TerminalNodeBuilder.Of(Token.GreaterThan),
-                                        Term = new TermRule
-                                        {
-                                            Number = new NumberRule
-                                            {
-                                                Number = TerminalNodeBuilder.Of("5", Token.ConstantNumber)
-                                            }
-                                        }
+                                        Term = new TermBuilder().AsNumber("5").Build
                                     }
                                 },
                                 Then = TerminalNodeBuilder.Of(Token.Then),
@@ -171,10 +136,7 @@ namespace Teeny.Core.Tests
                                         Write = TerminalNodeBuilder.Of(Token.Write),
                                         Expression = new ExpressionRule
                                         {
-                                            Term = new TermRule
-                                            {
-                                                Identifier = TerminalNodeBuilder.Of("z1", Token.Identifier)
-                                            }
+                                            Term = new TermBuilder().AsIdentifier("z1").Build
                                         },
                                         Semicolon = TerminalNodeBuilder.Of(Token.Semicolon)
                                     }
@@ -188,14 +150,11 @@ namespace Teeny.Core.Tests
                                         {
                                             new AssignmentStatementRule
                                             {
-                                                Identifier = TerminalNodeBuilder.Of("z1", Token.Identifier),
+                                                Identifier = TerminalNodeBuilder.Of(Token.Identifier, "z1"),
                                                 AssignmentOperator = TerminalNodeBuilder.Of(Token.Assignment),
                                                 Expression = new ExpressionRule
                                                 {
-                                                    Term = new TermRule
-                                                    {
-                                                        Identifier = TerminalNodeBuilder.Of("val", Token.Identifier)
-                                                    }
+                                                    Term = new TermBuilder().AsIdentifier("val").Build
                                                 },
                                                 Semicolon = TerminalNodeBuilder.Of(Token.Semicolon)
                                             }
@@ -204,8 +163,7 @@ namespace Teeny.Core.Tests
                                     }
                                 }
                             }
-                        }).Build
-            };
+                        }).Build).Build;
 
             // Act
             _parser.Parse(tokensTable);
@@ -249,9 +207,8 @@ namespace Teeny.Core.Tests
                 new TokenRecord {Lexeme = "}", Token = Token.CurlyBracketRight}
             };
 
-            var expectedProgram = new ProgramRule
-            {
-                MainFunction = new MainFunctionBuilder()
+            var expectedProgram = new ProgramBuilder()
+                .WithMain(new MainFunctionBuilder()
                     .WithStatements(new List<StatementRule>
                     {
                         new DeclarationStatementRule
@@ -259,17 +216,11 @@ namespace Teeny.Core.Tests
                             DataType = TerminalNodeBuilder.Of(Token.Int),
                             IdOrAssignment = new IdOrAssignmentRule
                             {
-                                Identifier = TerminalNodeBuilder.Of("x", Token.Identifier),
+                                Identifier = TerminalNodeBuilder.Of(Token.Identifier, "x"),
                                 AssignmentOperator = TerminalNodeBuilder.Of(Token.Assignment),
                                 Expression = new ExpressionRule
                                 {
-                                    Term = new TermRule
-                                    {
-                                        Number = new NumberRule
-                                        {
-                                            Number = TerminalNodeBuilder.Of("101", Token.ConstantNumber)
-                                        }
-                                    }
+                                    Term = new TermBuilder().AsNumber("101").Build
                                 }
                             },
                             Semicolon = TerminalNodeBuilder.Of(Token.Semicolon)
@@ -281,29 +232,19 @@ namespace Teeny.Core.Tests
                             {
                                 new AssignmentStatementRule
                                 {
-                                    Identifier = TerminalNodeBuilder.Of("x", Token.Identifier),
+                                    Identifier = TerminalNodeBuilder.Of(Token.Identifier, "x"),
                                     AssignmentOperator = TerminalNodeBuilder.Of(Token.Assignment),
                                     Expression = new ExpressionRule
                                     {
                                         Equation = new EquationRule
                                         {
-                                            Term = new TermRule
-                                            {
-                                                Identifier = TerminalNodeBuilder.Of("x", Token.Identifier)
-                                            },
+                                            Term = new TermBuilder().AsIdentifier("x").Build,
                                             ExtraEquation = new ExtraEquationRule
                                             {
                                                 ArithmeticOperator = TerminalNodeBuilder.Of(Token.Minus),
-                                                Equation = new EquationRule
-                                                {
-                                                    Term = new TermRule
-                                                    {
-                                                        Number = new NumberRule
-                                                        {
-                                                            Number = TerminalNodeBuilder.Of("1", Token.ConstantNumber)
-                                                        }
-                                                    }
-                                                }
+                                                Equation = new EquationBuilder()
+                                                    .AsNumberTermEquation("1")
+                                                    .Build
                                             }
                                         }
                                     },
@@ -315,23 +256,16 @@ namespace Teeny.Core.Tests
                             {
                                 Condition = new ConditionRule
                                 {
-                                    Identifier = TerminalNodeBuilder.Of("x", Token.Identifier),
+                                    Identifier = TerminalNodeBuilder.Of(Token.Identifier, "x"),
                                     ConditionOperator = TerminalNodeBuilder.Of(Token.Equal),
-                                    Term = new TermRule
-                                    {
-                                        Number = new NumberRule
-                                        {
-                                            Number = TerminalNodeBuilder.Of("0", Token.ConstantNumber)
-                                        }
-                                    }
+                                    Term = new TermBuilder().AsNumber("0").Build
                                 }
                             }
                         }
-                    }).Build
-            };
+                    }).Build).Build;
 
             // Act
-             _parser.Parse(tokensTable);
+            _parser.Parse(tokensTable);
 
             // Assert
             _parser.ProgramRoot.ShouldDeepEqual(expectedProgram);
