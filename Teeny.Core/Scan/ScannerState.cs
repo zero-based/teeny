@@ -1,15 +1,24 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using Teeny.Core.Scan.Attributes;
 
 namespace Teeny.Core.Scan
 {
     public class ScannerState
     {
+        private State _state = State.Unknown;
+
+        public ScannerState()
+        {
+            BuildLookupTables();
+        }
+
+        private Dictionary<State, RegularStateAttribute> RegularStatesLookup { get; } = new Dictionary<State, RegularStateAttribute>();
+        private Dictionary<State, StreamStateAttribute> StreamStatesLookup { get; } = new Dictionary<State, StreamStateAttribute>();
         private StringBuilder LexemeBuilder { get; } = new StringBuilder();
 
-        private State _state = State.Unknown;
         public State State
         {
             get => _state;
@@ -30,14 +39,13 @@ namespace Teeny.Core.Scan
 
         public void Update(ScanFrame frame)
         {
-            var isStream = _state.GetAttributeOfType<StreamAttribute>() != null;
-            if (isStream)
+            if (StreamStatesLookup.ContainsKey(State))
             {
                 LexemeBuilder.Append(frame.Center);
 
                 // Close stream if it's eligible for closure
-                if (State == State.ScanningString && (frame.Center == '"' || frame.Center == '\n') ||
-                    State == State.ScanningComment && frame.Center == '/' && frame.LookBack == '*')
+                var streamAttribute = StreamStatesLookup[State];
+                if (frame.Matches(streamAttribute.ClosePattern))
                     State = State.StreamClosed;
 
                 return;
@@ -47,26 +55,30 @@ namespace Teeny.Core.Scan
             LexemeBuilder.Append(frame.Center);
         }
 
-        private static State GetState(ScanFrame frame)
+        private State GetState(ScanFrame frame)
         {
-            var state = State.Unknown;
+            foreach (var (streamState, streamAttribute) in StreamStatesLookup)
+                if (frame.Matches(streamAttribute.OpenPattern))
+                    return streamState;
 
-            if (frame.Center == '"')
-                state = State.ScanningString;
-            else if (frame.Center == '/' && frame.LookAhead == '*')
-                state = State.ScanningComment;
-            else if (char.IsLetterOrDigit(frame.Center) || frame.Center == '.')
-                state = State.ScanningAlphanumeric;
-            else if (char.IsWhiteSpace(frame.Center))
-                state = State.ScanningWhitespace;
-            else if (frame.Center == '(' || frame.Center == '{' || frame.Center == '[')
-                state = State.ScanningLeftBracket;
-            else if (frame.Center == ')' || frame.Center == '}' || frame.Center == ']')
-                state = State.ScanningRightBracket;
-            else if (Regex.IsMatch(frame.Center.ToString(), @"[^\w\d\s]"))
-                state = State.ScanningSymbol;
+            foreach (var (regularState, regularAttribute) in RegularStatesLookup)
+                if (frame.CenterMatches(regularAttribute.Pattern))
+                    return regularState;
 
-            return state;
+            return State.Unknown;
+        }
+
+        private void BuildLookupTables()
+        {
+            var states = Enum.GetValues(typeof(State)).Cast<State>();
+            foreach (var state in states)
+            {
+                var regularAttribute = state.GetAttributeOfType<RegularStateAttribute>();
+                if (regularAttribute != null) RegularStatesLookup.Add(state, regularAttribute);
+
+                var streamAttribute = state.GetAttributeOfType<StreamStateAttribute>();
+                if (streamAttribute != null) StreamStatesLookup.Add(state, streamAttribute);
+            }
         }
     }
 }

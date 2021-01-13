@@ -4,19 +4,21 @@ namespace Teeny.Core.Scan
 {
     public enum State
     {
+        // Regular States
+        [RegularState(@"[a-zA-Z0-9]|\.")] ScanningAlphanumeric,
+        [RegularState(@"\s")] ScanningWhitespace,
+        [RegularState(@"\{|\[|\(")] ScanningLeftBracket,
+        [RegularState(@"\}|\]|\)")] ScanningRightBracket,
+        [RegularState(@"[^\w\d\s]")] ScanningSymbol,
+
+        // Stream States
+        [StreamState(@"./\*", @"\*/.")] ScanningComment,
+        [StreamState(@"."".", @".(""|\n).")] ScanningString,
+
+        // Meta States
         ScanStarted,
         ScanEnded,
-
-        ScanningAlphanumeric,
-        ScanningSymbol,
-        ScanningLeftBracket,
-        ScanningRightBracket,
-        ScanningWhitespace,
-
-        [Stream] ScanningComment,
-        [Stream] ScanningString,
         StreamClosed,
-
         Unknown
     }
 }
