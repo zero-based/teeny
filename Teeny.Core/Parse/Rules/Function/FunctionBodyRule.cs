@@ -19,9 +19,9 @@ namespace Teeny.Core.Parse.Rules.Function
         {
         }
 
-        public TerminalNode RightCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketRight);
+        public TerminalNode LeftCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketLeft);
         public ICollection<StatementRule> Statements { get; set; }
         public ReturnStatementRule ReturnStatement { get; set; }
-        public TerminalNode LeftCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketLeft);
+        public TerminalNode RightCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketRight);
     }
 }

@@ -118,7 +118,7 @@ namespace Teeny.Core.Parse
 
             var curlyBracketRight = Match(Token.CurlyBracketRight);
 
-            return statements != null && returnStatement != null
+            return returnStatement != null
                 ? TryBuild(() => new FunctionBodyRule(curlyBracketLeft, statements, returnStatement, curlyBracketRight))
                 : null;
         }
@@ -197,23 +197,30 @@ namespace Teeny.Core.Parse
 
         private ParameterRule ParseParameter()
         {
-            var dataType = Match(Token.Identifier);
+            var dataType = Match(Token.Int, Token.Float, Token.String);
             var identifier = Match(Token.Identifier);
             return TryBuild(() => new ParameterRule(dataType, identifier));
         }
 
         private ParametersRule ParseParameters()
         {
+            if (CurrentRecord.Token != Token.Int
+                && CurrentRecord.Token != Token.Float
+                && CurrentRecord.Token != Token.String)
+                return null;
+
             var parameter = ParseParameter();
             var extraParameter = ParseExtraParameter();
 
-            return parameter != null && extraParameter != null
+            return parameter != null
                 ? TryBuild(() => new ParametersRule(parameter, extraParameter))
                 : null;
         }
 
         private ExtraParameterRule ParseExtraParameter()
         {
+            if (CurrentRecord.Token != Token.Comma) return null;
+
             var comma = Match(Token.Comma);
             var parameter = ParseParameter();
 
@@ -255,7 +262,7 @@ namespace Teeny.Core.Parse
             var until = Match(Token.Until);
             var conditionStatement = ParseConditionStatement();
 
-            return statements != null && conditionStatement != null
+            return conditionStatement != null
                 ? TryBuild(() => new RepeatStatementRule(repeat, statements, until, conditionStatement))
                 : null;
         }
@@ -309,7 +316,7 @@ namespace Teeny.Core.Parse
             var statements = ParseStatements();
             var extraElseIf = ParseExtraElseIf();
 
-            return conditionStatement != null && statements != null && extraElseIf != null
+            return conditionStatement != null && extraElseIf != null
                 ? TryBuild(() => new IfStatementRule(@if, conditionStatement, then, statements, extraElseIf))
                 : null;
         }
@@ -322,7 +329,7 @@ namespace Teeny.Core.Parse
             var statements = ParseStatements();
             var extraElseIf = ParseExtraElseIf();
 
-            return conditionStatement != null && statements != null && extraElseIf != null
+            return conditionStatement != null && extraElseIf != null
                 ? TryBuild(() => new ElseIfStatementRule(elseIf, conditionStatement, then, statements, extraElseIf))
                 : null;
         }
@@ -333,9 +340,7 @@ namespace Teeny.Core.Parse
             var statements = ParseStatements();
             var end = Match(Token.End);
 
-            return statements != null
-                ? TryBuild(() => new ElseStatementRule(@else, statements, end))
-                : null;
+            return TryBuild(() => new ElseStatementRule(@else, statements, end));
         }
 
         private ExtraElseIfRule ParseExtraElseIf()
@@ -498,6 +503,7 @@ namespace Teeny.Core.Parse
         private ICollection<FunctionStatementRule> ParseFunctionStatements()
         {
             var functionStatements = new List<FunctionStatementRule>();
+
             while (true)
             {
                 var functionStatement = ParseFunctionStatement();
@@ -515,7 +521,6 @@ namespace Teeny.Core.Parse
             var leftParenthesis = Match(Token.ParenthesisLeft);
             var parameters = ParseParameters();
             var rightParenthesis = Match(Token.ParenthesisRight);
-
 
             return parameters != null
                 ? TryBuild(() =>
