@@ -9,14 +9,17 @@ namespace Teeny.Core.Scan
 {
     public class Scanner
     {
-        public Scanner()
+        static Scanner()
         {
-            BuildLookupTables();
+            ConstantTokensLookup = AttributesHelper.GetLookUpTable<Token, ConstantTokenAttribute>()
+                .ToDictionary(x => x.Value.ReservedWord, x => x.Key);
+            PatternTokensLookup = AttributesHelper.GetLookUpTable<Token, PatternTokenAttribute>();
+            IgnoredTokensLookup = AttributesHelper.GetLookUpTable<Token, IgnoredTokenAttribute>();
         }
 
-        private Dictionary<string, Token> ConstantTokensLookup { get; } = new Dictionary<string, Token>();
-        private List<(string pattern, Token token)> PatternTokensLookup { get; } = new List<(string pattern, Token token)>();
-        private HashSet<Token> IgnoredTokenLookup { get; } = new HashSet<Token>();
+        private static Dictionary<string, Token> ConstantTokensLookup { get; }
+        private static Dictionary<Token, PatternTokenAttribute> PatternTokensLookup { get; } 
+        private static Dictionary<Token, IgnoredTokenAttribute> IgnoredTokensLookup { get; }
 
         public List<TokenRecord> TokensTable { get; } = new List<TokenRecord>();
         public List<ErrorRecord> ErrorTable { get; } = new List<ErrorRecord>();
@@ -55,7 +58,7 @@ namespace Teeny.Core.Scan
                 return;
             }
 
-            if (IgnoredTokenLookup.Contains(token)) return;
+            if (IgnoredTokensLookup.ContainsKey(token)) return;
 
             TokensTable.Add(new TokenRecord
             {
@@ -64,13 +67,13 @@ namespace Teeny.Core.Scan
             });
         }
 
-        private Token Tokenize(string lexeme)
+        private static Token Tokenize(string lexeme)
         {
             var found = ConstantTokensLookup.TryGetValue(lexeme, out var tokenValue);
             if (found) return tokenValue;
 
-            foreach (var (pattern, token) in PatternTokensLookup)
-                if (Regex.IsMatch(lexeme, pattern))
+            foreach (var (token, patternAttribute) in PatternTokensLookup)
+                if (Regex.IsMatch(lexeme, patternAttribute.Pattern))
                     return token;
 
             return Token.Unknown;
@@ -86,22 +89,6 @@ namespace Teeny.Core.Scan
             };
 
             return error;
-        }
-
-        private void BuildLookupTables()
-        {
-            var tokens = Enum.GetValues(typeof(Token)).Cast<Token>();
-            foreach (var token in tokens)
-            {
-                var constantTokenAttribute = token.GetAttributeOfType<ConstantTokenAttribute>();
-                if (constantTokenAttribute != null) ConstantTokensLookup.Add(constantTokenAttribute.ReservedWord, token);
-
-                var patternTokenAttribute = token.GetAttributeOfType<PatternTokenAttribute>();
-                if (patternTokenAttribute != null) PatternTokensLookup.Add((patternTokenAttribute.Pattern, token));
-
-                var ignoredTokenAttribute = token.GetAttributeOfType<IgnoredTokenAttribute>();
-                if (ignoredTokenAttribute != null) IgnoredTokenLookup.Add(token);
-            }
         }
     }
 }

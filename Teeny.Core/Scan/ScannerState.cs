@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Teeny.Core.Scan.Attributes;
 
@@ -10,13 +9,15 @@ namespace Teeny.Core.Scan
     {
         private State _state = State.Unknown;
 
-        public ScannerState()
+        static ScannerState()
         {
-            BuildLookupTables();
+            RegularStatesLookup = AttributesHelper.GetLookUpTable<State, RegularStateAttribute>();
+            StreamStatesLookup = AttributesHelper.GetLookUpTable<State, StreamStateAttribute>();
         }
 
-        private Dictionary<State, RegularStateAttribute> RegularStatesLookup { get; } = new Dictionary<State, RegularStateAttribute>();
-        private Dictionary<State, StreamStateAttribute> StreamStatesLookup { get; } = new Dictionary<State, StreamStateAttribute>();
+        private static Dictionary<State, RegularStateAttribute> RegularStatesLookup { get; }
+        private static Dictionary<State, StreamStateAttribute> StreamStatesLookup { get; }
+
         private StringBuilder LexemeBuilder { get; } = new StringBuilder();
 
         public State State
@@ -66,19 +67,6 @@ namespace Teeny.Core.Scan
                     return regularState;
 
             return State.Unknown;
-        }
-
-        private void BuildLookupTables()
-        {
-            var states = Enum.GetValues(typeof(State)).Cast<State>();
-            foreach (var state in states)
-            {
-                var regularAttribute = state.GetAttributeOfType<RegularStateAttribute>();
-                if (regularAttribute != null) RegularStatesLookup.Add(state, regularAttribute);
-
-                var streamAttribute = state.GetAttributeOfType<StreamStateAttribute>();
-                if (streamAttribute != null) StreamStatesLookup.Add(state, streamAttribute);
-            }
         }
     }
 }
