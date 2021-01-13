@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using AutoMapper;
 using CommandLine;
 using ConsoleTables;
+using Teeny.Core.Parse;
+using Teeny.Core.Parse.Rules;
 using Teeny.Core.Scan;
 using CmdError = CommandLine.Error;
+using CmdParser = CommandLine.Parser;
+using Parser = Teeny.Core.Parse.Parser;
 
 namespace Teeny.CLI
 {
@@ -34,7 +38,7 @@ namespace Teeny.CLI
             Console.WriteLine(banner);
 
             var helpWriter = new StringWriter();
-            var parser = new Parser(with => with.HelpWriter = helpWriter);
+            var parser = new CmdParser(with => with.HelpWriter = helpWriter);
             parser.ParseArguments<Options>(args)
                 .WithParsed(RunWithOptions)
                 .WithNotParsed(errors => HandleParseError(errors, helpWriter));
@@ -54,8 +58,8 @@ namespace Teeny.CLI
             try
             {
                 var code = ReadWithOptions(opts);
-                var tokensTable = ScanWithOptions(code, opts);
-                Debug.WriteLine(tokensTable);
+                var tokenRecords = ScanWithOptions(code, opts);
+                var programRoot = ParseWithOptions(tokenRecords, opts);
             }
             catch (Exception e)
             {
@@ -103,6 +107,29 @@ namespace Teeny.CLI
             }
 
             return scanner.TokensTable;
+        }
+
+        private static ProgramRule ParseWithOptions(IEnumerable<TokenRecord> tokenRecords, Options opts)
+        {
+            var parser = new Parser();
+            parser.Parse(tokenRecords.ToList());
+
+            var tree = AutoMapperConfig.Mapper.Map<TreeNode>(parser.ProgramRoot);
+
+
+            if (opts.Silent) return parser.ProgramRoot;
+
+            Console.WriteLine();
+            Console.WriteLine("Parse Tree:");
+            tree.PrintTree();
+
+            if (parser.ErrorList.Count == 0) return parser.ProgramRoot;
+
+            Console.WriteLine();
+            ConsoleTable.From(parser.ErrorList.ConvertAll(input => new {Error=input}))
+                .Write(Format.Alternative);
+
+            return parser.ProgramRoot;
         }
 
         private static string ReadUserInput()
