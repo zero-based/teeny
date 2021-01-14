@@ -18,27 +18,26 @@ namespace Teeny.Core.Parse
 {
     public class Parser
     {
-        private Queue<TokenRecord> _tokensQueue;
-
+        private ICollection<TokenRecord> _tokensList;
         public List<string> ErrorList;
         public ProgramRule ProgramRoot;
-        private TokenRecord CurrentRecord => _tokensQueue.Peek();
-        private TokenRecord NextRecord => _tokensQueue.ElementAt(1);
+        private TokenRecord CurrentRecord => _tokensList.First();
+        private TokenRecord NextRecord => _tokensList.ElementAt(1);
 
         private TerminalNode Match(params Token[] tokens)
         {
             if (tokens.Contains(CurrentRecord.Token))
             {
                 var tokenRecord = CurrentRecord;
-                _tokensQueue.Dequeue();
+                _tokensList.Remove(CurrentRecord);
                 return new TerminalNode(tokenRecord);
             }
 
             if (tokens.Contains(NextRecord.Token))
             {
-                _tokensQueue.Dequeue();
+                _tokensList.Remove(CurrentRecord);
                 var tokenRecord = CurrentRecord;
-                _tokensQueue.Dequeue();
+                _tokensList.Remove(CurrentRecord);
                 return new TerminalNode(tokenRecord);
             }
 
@@ -63,7 +62,7 @@ namespace Teeny.Core.Parse
 
         public void Parse(List<TokenRecord> tokens)
         {
-            _tokensQueue = new Queue<TokenRecord>(tokens);
+            _tokensList = tokens;
             ErrorList = new List<string>();
 
             try
