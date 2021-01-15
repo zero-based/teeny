@@ -6,22 +6,22 @@ namespace Teeny.Core.Parse.Rules.Statements
 {
     public class RepeatStatementRule : StatementRule
     {
-        public RepeatStatementRule(TokenRecord repeat, ICollection<StatementRule> statements, TokenRecord until,
-            ConditionStatementRule conditionStatement)
+        public RepeatStatementRule(TerminalNode repeat, ICollection<StatementRule> statements,
+            TerminalNode until, ConditionStatementRule conditionStatement)
         {
-            Repeat.Assign(repeat);
+            Repeat = Guard.OneOf(() => repeat, Token.Repeat);
             Statements = statements;
-            Until.Assign(until);
-            ConditionStatement = conditionStatement;
+            Until = Guard.OneOf(() => until, Token.Until);
+            ConditionStatement = Guard.NonNull(() => conditionStatement);
         }
 
         public RepeatStatementRule()
         {
         }
 
-        public TerminalNode Repeat { get; set; } = new TerminalNode(Token.Repeat);
+        public TerminalNode Repeat { get; set; }
         public ICollection<StatementRule> Statements { get; set; }
-        public TerminalNode Until { get; set; } = new TerminalNode(Token.Until);
+        public TerminalNode Until { get; set; }
         public ConditionStatementRule ConditionStatement { get; set; }
     }
 }

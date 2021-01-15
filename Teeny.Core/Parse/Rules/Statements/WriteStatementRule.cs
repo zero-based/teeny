@@ -5,27 +5,27 @@ namespace Teeny.Core.Parse.Rules.Statements
 {
     public class WriteStatementRule : StatementRule
     {
-        public WriteStatementRule(TokenRecord write, ExpressionRule expression, TokenRecord semicolon)
+        public WriteStatementRule(TerminalNode write, ExpressionRule expression, TerminalNode semicolon)
         {
-            Write.Assign(write);
-            Expression = expression;
-            Semicolon.Assign(semicolon);
+            Write = Guard.OneOf(() => write, Token.Write);
+            Expression = Guard.NonNull(() => expression);
+            Semicolon = Guard.OneOf(() => semicolon, Token.Semicolon);
         }
 
-        public WriteStatementRule(TokenRecord write, TokenRecord endl, TokenRecord semicolon)
+        public WriteStatementRule(TerminalNode write, TerminalNode endl, TerminalNode semicolon)
         {
-            Write.Assign(write);
-            Endl.Assign(endl);
-            Semicolon.Assign(semicolon);
+            Write = Guard.OneOf(() => write, Token.Write);
+            Endl = Guard.OneOf(() => endl, Token.Endl);
+            Semicolon = Guard.OneOf(() => semicolon, Token.Semicolon);
         }
 
         public WriteStatementRule()
         {
         }
 
-        public TerminalNode Write { get; set; } = new TerminalNode(Token.Write);
+        public TerminalNode Write { get; set; }
         public ExpressionRule Expression { get; set; }
-        public TerminalNode Endl { get; set; } = new TerminalNode(Token.Endl);
-        public TerminalNode Semicolon { get; set; } = new TerminalNode(Token.Semicolon);
+        public TerminalNode Endl { get; set; }
+        public TerminalNode Semicolon { get; set; }
     }
 }

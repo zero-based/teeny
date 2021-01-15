@@ -4,15 +4,15 @@ namespace Teeny.Core.Parse.Rules.Common
 {
     public class NumberRule : BaseRule
     {
-        public NumberRule(SignRule sign, TokenRecord number)
+        public NumberRule(SignRule sign, TerminalNode number)
         {
-            Sign = sign;
-            Number.Assign(number);
+            Sign = Guard.NonNull(() => sign);
+            Number = Guard.OneOf(() => number, Token.ConstantNumber);
         }
 
-        public NumberRule(TokenRecord number)
+        public NumberRule(TerminalNode number)
         {
-            Number.Assign(number);
+            Number = Guard.OneOf(() => number, Token.ConstantNumber);
         }
 
         public NumberRule()
@@ -20,6 +20,6 @@ namespace Teeny.Core.Parse.Rules.Common
         }
 
         public SignRule Sign { get; set; }
-        public TerminalNode Number { get; set; } = new TerminalNode(Token.ConstantNumber);
+        public TerminalNode Number { get; set; }
     }
 }

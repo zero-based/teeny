@@ -4,19 +4,19 @@ namespace Teeny.Core.Parse.Rules.Statements.Condition
 {
     public class ExtraConditionRule : BaseRule
     {
+        public ExtraConditionRule(TerminalNode booleanOperator, ConditionRule condition,
+            ExtraConditionRule extraCondition)
+        {
+            BooleanOperator = Guard.OneOf(() => booleanOperator, Token.And, Token.Or);
+            Condition = Guard.NonNull(() => condition);
+            ExtraCondition = extraCondition;
+        }
+
         public ExtraConditionRule()
         {
         }
 
-        public ExtraConditionRule(TokenRecord booleanOperator, ConditionRule condition,
-            ExtraConditionRule extraCondition)
-        {
-            BooleanOperator.Assign(booleanOperator);
-            Condition = condition;
-            ExtraCondition = extraCondition;
-        }
-
-        public TerminalNode BooleanOperator { get; set; } = new TerminalNode(Token.And, Token.Or);
+        public TerminalNode BooleanOperator { get; set; }
         public ConditionRule Condition { get; set; }
         public ExtraConditionRule ExtraCondition { get; set; }
     }

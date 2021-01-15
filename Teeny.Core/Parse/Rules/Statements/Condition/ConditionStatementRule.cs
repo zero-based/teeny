@@ -4,7 +4,7 @@
     {
         public ConditionStatementRule(ConditionRule condition, ExtraConditionRule extraCondition)
         {
-            Condition = condition;
+            Condition = Guard.NonNull(() => condition);
             ExtraCondition = extraCondition;
         }
 

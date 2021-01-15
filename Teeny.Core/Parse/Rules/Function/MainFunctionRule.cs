@@ -4,25 +4,25 @@ namespace Teeny.Core.Parse.Rules.Function
 {
     public class MainFunctionRule : BaseRule
     {
-        public MainFunctionRule(TokenRecord dataType, TokenRecord main,
-            TokenRecord leftParenthesis, TokenRecord rightParenthesis,
+        public MainFunctionRule(TerminalNode dataType, TerminalNode main,
+            TerminalNode leftParenthesis, TerminalNode rightParenthesis,
             FunctionBodyRule functionBody)
         {
-            DataType.Assign(dataType);
-            Main.Assign(main);
-            LeftParenthesis.Assign(leftParenthesis);
-            RightParenthesis.Assign(rightParenthesis);
-            FunctionBody = functionBody;
+            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            Main = Guard.OneOf(() => main, Token.Main);
+            LeftParenthesis = Guard.OneOf(() => leftParenthesis, Token.ParenthesisLeft);
+            RightParenthesis = Guard.OneOf(() => rightParenthesis, Token.ParenthesisRight);
+            FunctionBody = Guard.NonNull(() => functionBody);
         }
 
         public MainFunctionRule()
         {
         }
 
-        public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
-        public TerminalNode Main { get; set; } = new TerminalNode(Token.Main);
-        public TerminalNode LeftParenthesis { get; set; } = new TerminalNode(Token.ParenthesisLeft);
-        public TerminalNode RightParenthesis { get; set; } = new TerminalNode(Token.ParenthesisRight);
+        public TerminalNode DataType { get; set; }
+        public TerminalNode Main { get; set; }
+        public TerminalNode LeftParenthesis { get; set; }
+        public TerminalNode RightParenthesis { get; set; }
         public FunctionBodyRule FunctionBody { get; set; }
     }
 }

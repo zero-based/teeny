@@ -5,19 +5,19 @@ namespace Teeny.Core.Parse.Rules.Statements
 {
     public class ReturnStatementRule : StatementRule
     {
-        public ReturnStatementRule(TokenRecord @return, ExpressionRule expression, TokenRecord semicolon)
+        public ReturnStatementRule(TerminalNode @return, ExpressionRule expression, TerminalNode semicolon)
         {
-            Return.Assign(@return);
-            Expression = expression;
-            Semicolon.Assign(semicolon);
+            Return = Guard.OneOf(() => @return, Token.Return);
+            Expression = Guard.NonNull(() => expression);
+            Semicolon = Guard.OneOf(() => semicolon, Token.Semicolon);
         }
 
         public ReturnStatementRule()
         {
         }
 
-        public TerminalNode Return { get; set; } = new TerminalNode(Token.Return);
+        public TerminalNode Return { get; set; }
         public ExpressionRule Expression { get; set; }
-        public TerminalNode Semicolon { get; set; } = new TerminalNode(Token.Semicolon);
+        public TerminalNode Semicolon { get; set; }
     }
 }

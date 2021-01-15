@@ -4,17 +4,17 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
 {
     public class ExtraParameterRule : BaseRule
     {
-        public ExtraParameterRule(TokenRecord comma, ParameterRule parameter)
+        public ExtraParameterRule(TerminalNode comma, ParameterRule parameter)
         {
-            Comma.Assign(comma);
-            Parameter = parameter;
+            Comma = Guard.OneOf(() => comma, Token.Comma);
+            Parameter = Guard.NonNull(() => parameter);
         }
 
         public ExtraParameterRule()
         {
         }
 
-        public TerminalNode Comma { get; set; } = new TerminalNode(Token.Comma);
+        public TerminalNode Comma { get; set; }
         public ParameterRule Parameter { get; set; }
     }
 }

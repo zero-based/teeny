@@ -4,10 +4,11 @@ namespace Teeny.Core.Parse.Rules.Equation
 {
     public class ExtraEquationRule : BaseRule
     {
-        public ExtraEquationRule(TokenRecord arithmeticOperator, EquationRule equation, ExtraEquationRule extraEquation)
+        public ExtraEquationRule(TerminalNode arithmeticOperator, EquationRule equation,
+            ExtraEquationRule extraEquation)
         {
-            ArithmeticOperator.Assign(arithmeticOperator);
-            Equation = equation;
+            ArithmeticOperator = Guard.OneOf(() => arithmeticOperator, Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
+            Equation = Guard.NonNull(() => equation);
             ExtraEquation = extraEquation;
         }
 
@@ -15,9 +16,7 @@ namespace Teeny.Core.Parse.Rules.Equation
         {
         }
 
-        public TerminalNode ArithmeticOperator { get; set; } =
-            new TerminalNode(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
-
+        public TerminalNode ArithmeticOperator { get; set; }
         public EquationRule Equation { get; set; }
         public ExtraEquationRule ExtraEquation { get; set; }
     }

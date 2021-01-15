@@ -6,22 +6,22 @@ namespace Teeny.Core.Parse.Rules.Function
 {
     public class FunctionBodyRule : BaseRule
     {
-        public FunctionBodyRule(TokenRecord leftCurlyBracket,
-            ICollection<StatementRule> statements, ReturnStatementRule returnStatement, TokenRecord rightCurlyBracket)
+        public FunctionBodyRule(TerminalNode leftCurlyBracket, ICollection<StatementRule> statements,
+            ReturnStatementRule returnStatement, TerminalNode rightCurlyBracket)
         {
-            LeftCurlyBracket.Assign(leftCurlyBracket);
+            LeftCurlyBracket = Guard.OneOf(() => leftCurlyBracket, Token.CurlyBracketLeft);
             Statements = statements;
-            ReturnStatement = returnStatement;
-            RightCurlyBracket.Assign(rightCurlyBracket);
+            ReturnStatement = Guard.NonNull(() => returnStatement);
+            RightCurlyBracket = Guard.OneOf(() => rightCurlyBracket, Token.CurlyBracketRight);
         }
 
         public FunctionBodyRule()
         {
         }
 
-        public TerminalNode LeftCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketLeft);
+        public TerminalNode LeftCurlyBracket { get; set; }
         public ICollection<StatementRule> Statements { get; set; }
         public ReturnStatementRule ReturnStatement { get; set; }
-        public TerminalNode RightCurlyBracket { get; set; } = new TerminalNode(Token.CurlyBracketRight);
+        public TerminalNode RightCurlyBracket { get; set; }
     }
 }

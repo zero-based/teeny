@@ -5,19 +5,19 @@ namespace Teeny.Core.Parse.Rules.Statements.If
 {
     public class ElseStatementRule : BaseRule
     {
-        public ElseStatementRule(TokenRecord @else, ICollection<StatementRule> statements, TokenRecord end)
+        public ElseStatementRule(TerminalNode @else, ICollection<StatementRule> statements, TerminalNode end)
         {
-            Else.Assign(@else);
+            Else = Guard.OneOf(() => @else, Token.Else);
             Statements = statements;
-            End.Assign(end);
+            End = Guard.OneOf(() => end, Token.End);
         }
 
         public ElseStatementRule()
         {
         }
 
-        public TerminalNode Else { get; set; } = new TerminalNode(Token.Else);
+        public TerminalNode Else { get; set; }
         public ICollection<StatementRule> Statements { get; set; }
-        public TerminalNode End { get; set; } = new TerminalNode(Token.End);
+        public TerminalNode End { get; set; }
     }
 }

@@ -6,23 +6,23 @@ namespace Teeny.Core.Parse.Rules.Statements.If
 {
     public class ElseIfStatementRule : BaseRule
     {
-        public ElseIfStatementRule(TokenRecord elseIf, ConditionStatementRule conditionStatement, TokenRecord then,
+        public ElseIfStatementRule(TerminalNode elseIf, ConditionStatementRule conditionStatement, TerminalNode then,
             ICollection<StatementRule> statements, ExtraElseIfRule extraElseIf)
         {
-            ElseIf.Assign(elseIf);
-            ConditionStatement = conditionStatement;
-            Then.Assign(then);
+            ElseIf = Guard.OneOf(() => elseIf, Token.ElseIf);
+            ConditionStatement = Guard.NonNull(() => conditionStatement);
+            Then = Guard.OneOf(() => then, Token.Then);
             Statements = statements;
-            ExtraElseIf = extraElseIf;
+            ExtraElseIf = Guard.NonNull(() => extraElseIf);
         }
 
         public ElseIfStatementRule()
         {
         }
 
-        public TerminalNode ElseIf { get; set; } = new TerminalNode(Token.ElseIf);
+        public TerminalNode ElseIf { get; set; }
         public ConditionStatementRule ConditionStatement { get; set; }
-        public TerminalNode Then { get; set; } = new TerminalNode(Token.Then);
+        public TerminalNode Then { get; set; }
         public ICollection<StatementRule> Statements { get; set; }
         public ExtraElseIfRule ExtraElseIf { get; set; }
     }

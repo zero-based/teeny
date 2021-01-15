@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using Teeny.Core.Parse.Validation;
 
 namespace Teeny.Core.Parse.Rules
 {
     public abstract class BaseRule : Node
     {
+        public RuleGuard Guard { get; } = new RuleGuard();
+
         public override string Name => GetType().Name;
 
         public override IEnumerable<Node> Children
@@ -24,7 +27,7 @@ namespace Teeny.Core.Parse.Rules
                     else if (typeof(TerminalNode).IsAssignableFrom(property.PropertyType))
                     {
                         var child = (TerminalNode) property.GetValue(this);
-                        if (child?.TokenRecord != null)
+                        if (child != null)
                             yield return child;
                     }
                     else if (typeof(IEnumerable<BaseRule>).IsAssignableFrom(property.PropertyType))

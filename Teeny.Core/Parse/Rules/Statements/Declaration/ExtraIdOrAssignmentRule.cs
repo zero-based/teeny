@@ -4,11 +4,11 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {
     public class ExtraIdOrAssignmentRule : BaseRule
     {
-        public ExtraIdOrAssignmentRule(TokenRecord comma, IdOrAssignmentRule idOrAssignment,
+        public ExtraIdOrAssignmentRule(TerminalNode comma, IdOrAssignmentRule idOrAssignment,
             ExtraIdOrAssignmentRule extraIdOrAssign)
         {
-            Comma.Assign(comma);
-            IdOrAssignment = idOrAssignment;
+            Comma = Guard.OneOf(() => comma, Token.Comma);
+            IdOrAssignment = Guard.NonNull(() => idOrAssignment);
             ExtraIdOrAssign = extraIdOrAssign;
         }
 
@@ -16,7 +16,7 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
         {
         }
 
-        public TerminalNode Comma { get; set; } = new TerminalNode(Token.Comma);
+        public TerminalNode Comma { get; set; }
         public IdOrAssignmentRule IdOrAssignment { get; set; }
         public ExtraIdOrAssignmentRule ExtraIdOrAssign { get; set; }
     }
