@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using AutoMapper;
 using CommandLine;
 using ConsoleTables;
 using Teeny.Core.Parse;
@@ -114,14 +113,11 @@ namespace Teeny.CLI
             var parser = new Parser();
             parser.Parse(tokenRecords.ToList());
 
-            var tree = AutoMapperConfig.Mapper.Map<TreeNode>(parser.ProgramRoot);
-
-
             if (opts.Silent) return parser.ProgramRoot;
 
             Console.WriteLine();
             Console.WriteLine("Parse Tree:");
-            tree.PrintTree();
+            TreeVisualizer.Visualize(parser.ProgramRoot);
 
             if (parser.ErrorList.Count == 0) return parser.ProgramRoot;
 
