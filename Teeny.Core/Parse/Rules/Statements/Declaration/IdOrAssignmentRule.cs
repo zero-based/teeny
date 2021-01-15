@@ -5,24 +5,24 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {
     public class IdOrAssignmentRule : BaseRule
     {
-        public IdOrAssignmentRule(TokenRecord identifier)
+        public IdOrAssignmentRule(TerminalNode identifier)
         {
-            Identifier.Assign(identifier);
+            Identifier = Guard.OneOf(() => identifier, Token.Identifier);
         }
 
-        public IdOrAssignmentRule(TokenRecord identifier, TokenRecord assignmentOperator, ExpressionRule expression)
+        public IdOrAssignmentRule(TerminalNode identifier, TerminalNode assignmentOperator, ExpressionRule expression)
         {
-            Identifier.Assign(identifier);
-            AssignmentOperator.Assign(assignmentOperator);
-            Expression = expression;
+            Identifier = Guard.OneOf(() => identifier, Token.Identifier);
+            AssignmentOperator = Guard.OneOf(() => assignmentOperator, Token.Assignment);
+            Expression = Guard.NonNull(() => expression);
         }
 
         public IdOrAssignmentRule()
         {
         }
 
-        public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
-        public TerminalNode AssignmentOperator { get; set; } = new TerminalNode(Token.Assignment);
+        public TerminalNode Identifier { get; set; }
+        public TerminalNode AssignmentOperator { get; set; }
         public ExpressionRule Expression { get; set; }
     }
 }

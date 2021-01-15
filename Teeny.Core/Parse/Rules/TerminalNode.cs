@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Teeny.Core.Scan;
 
@@ -6,24 +5,20 @@ namespace Teeny.Core.Parse.Rules
 {
     public class TerminalNode : Node
     {
-        private readonly ICollection<Token> _validTokens;
-
-        public TerminalNode(params Token[] validTokens)
+        public TerminalNode(TokenRecord tokenRecord)
         {
-            _validTokens = validTokens;
+            Lexeme = tokenRecord.Lexeme;
+            Token = tokenRecord.Token;
         }
 
-        public TokenRecord TokenRecord { get; set; }
+        public TerminalNode()
+        {
+        }
 
-        public override string Name => TokenRecord == null ? "" : $"{TokenRecord.Lexeme} ({TokenRecord.Token})";
+        public string Lexeme { get; set; }
+        public Token Token { get; set; }
 
+        public override string Name => $"{Lexeme} ({Token})";
         public override IEnumerable<Node> Children => null;
-
-        public void Assign(TokenRecord tokenRecord)
-        {
-            if (tokenRecord == null || !_validTokens.Contains(tokenRecord.Token))
-                throw new ArgumentException();
-            TokenRecord = tokenRecord;
-        }
     }
 }

@@ -5,25 +5,25 @@ namespace Teeny.Core.Parse.Rules.Function
 {
     public class FunctionDeclarationRule : BaseRule
     {
-        public FunctionDeclarationRule(TokenRecord dataType, TokenRecord functionName,
-            TokenRecord leftParenthesisRecord,
-            ParametersRule parameters, TokenRecord rightParenthesisRecord)
+        public FunctionDeclarationRule(TerminalNode dataType, TerminalNode functionName,
+            TerminalNode leftParenthesis, ParametersRule parameters,
+            TerminalNode rightParenthesis)
         {
-            DataType.Assign(dataType);
-            FunctionName.Assign(functionName);
-            LeftParenthesis.Assign(leftParenthesisRecord);
+            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            FunctionName = Guard.OneOf(() => functionName, Token.Identifier);
+            LeftParenthesis = Guard.OneOf(() => leftParenthesis, Token.ParenthesisLeft);
             Parameters = parameters;
-            RightParenthesis.Assign(rightParenthesisRecord);
+            RightParenthesis = Guard.OneOf(() => rightParenthesis, Token.ParenthesisRight);
         }
 
         public FunctionDeclarationRule()
         {
         }
 
-        public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
-        public TerminalNode FunctionName { get; set; } = new TerminalNode(Token.Identifier);
-        public TerminalNode LeftParenthesis { get; set; } = new TerminalNode(Token.ParenthesisLeft);
+        public TerminalNode DataType { get; set; }
+        public TerminalNode FunctionName { get; set; }
+        public TerminalNode LeftParenthesis { get; set; }
         public ParametersRule Parameters { get; set; }
-        public TerminalNode RightParenthesis { get; set; } = new TerminalNode(Token.ParenthesisRight);
+        public TerminalNode RightParenthesis { get; set; }
     }
 }

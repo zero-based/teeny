@@ -4,7 +4,7 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
     {
         public ParametersRule(ParameterRule parameter, ExtraParameterRule extraParameter)
         {
-            Parameter = parameter;
+            Parameter = Guard.NonNull(() => parameter);
             ExtraParameter = extraParameter;
         }
 

@@ -4,19 +4,19 @@ namespace Teeny.Core.Parse.Rules.Statements
 {
     public class ReadStatementRule : StatementRule
     {
-        public ReadStatementRule(TokenRecord read, TokenRecord identifier, TokenRecord semicolon)
+        public ReadStatementRule(TerminalNode read, TerminalNode identifier, TerminalNode semicolon)
         {
-            Read.Assign(read);
-            Identifier.Assign(identifier);
-            Semicolon.Assign(semicolon);
+            Read = Guard.OneOf(() => read, Token.Read);
+            Identifier = Guard.OneOf(() => identifier, Token.Identifier);
+            Semicolon = Guard.OneOf(() => semicolon, Token.Semicolon);
         }
 
         public ReadStatementRule()
         {
         }
 
-        public TerminalNode Read { get; set; } = new TerminalNode(Token.Read);
-        public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
-        public TerminalNode Semicolon { get; set; } = new TerminalNode(Token.Semicolon);
+        public TerminalNode Read { get; set; }
+        public TerminalNode Identifier { get; set; }
+        public TerminalNode Semicolon { get; set; }
     }
 }

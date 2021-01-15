@@ -4,17 +4,17 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
 {
     public class ParameterRule : BaseRule
     {
-        public ParameterRule(TokenRecord dataType, TokenRecord identifier)
+        public ParameterRule(TerminalNode dataType, TerminalNode identifier)
         {
-            DataType.Assign(dataType);
-            Identifier.Assign(identifier);
+            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            Identifier = Guard.OneOf(() => identifier, Token.Identifier);
         }
 
         public ParameterRule()
         {
         }
 
-        public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
-        public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
+        public TerminalNode DataType { get; set; }
+        public TerminalNode Identifier { get; set; }
     }
 }

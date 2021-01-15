@@ -4,8 +4,8 @@
     {
         public FunctionStatementRule(FunctionDeclarationRule functionDeclaration, FunctionBodyRule functionBody)
         {
-            FunctionDeclaration = functionDeclaration;
-            FunctionBody = functionBody;
+            FunctionDeclaration = Guard.NonNull(() => functionDeclaration);
+            FunctionBody = Guard.NonNull(() => functionBody);
         }
 
         public FunctionStatementRule()

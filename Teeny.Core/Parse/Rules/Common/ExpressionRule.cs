@@ -5,26 +5,26 @@ namespace Teeny.Core.Parse.Rules.Common
 {
     public class ExpressionRule : BaseRule
     {
-        public ExpressionRule(TokenRecord @string)
+        public ExpressionRule(TerminalNode @string)
         {
-            String.Assign(@string);
+            String = Guard.OneOf(() => @string, Token.ConstantString);
         }
 
         public ExpressionRule(TermRule term)
         {
-            Term = term;
+            Term = Guard.NonNull(() => term);
         }
 
         public ExpressionRule(EquationRule equation)
         {
-            Equation = equation;
+            Equation = Guard.NonNull(() => equation);
         }
 
         public ExpressionRule()
         {
         }
 
-        public TerminalNode String { get; set; } = new TerminalNode(Token.ConstantString);
+        public TerminalNode String { get; set; }
         public TermRule Term { get; set; }
         public EquationRule Equation { get; set; }
     }

@@ -7,17 +7,17 @@ namespace Teeny.Core.Parse.Rules.Common
     {
         public TermRule(NumberRule number)
         {
-            Number = number;
+            Number = Guard.NonNull(() => number);
         }
 
-        public TermRule(TokenRecord identifier)
+        public TermRule(TerminalNode identifier)
         {
-            Identifier.Assign(identifier);
+            Identifier = Guard.OneOf(() => identifier, Token.Identifier);
         }
 
         public TermRule(FunctionCallRule functionCall)
         {
-            FunctionCall = functionCall;
+            FunctionCall = Guard.NonNull(() => functionCall);
         }
 
         public TermRule()
@@ -26,7 +26,7 @@ namespace Teeny.Core.Parse.Rules.Common
 
         public NumberRule Number { get; set; }
 
-        public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
+        public TerminalNode Identifier { get; set; }
 
         public FunctionCallRule FunctionCall { get; set; }
     }

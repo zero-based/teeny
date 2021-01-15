@@ -5,22 +5,22 @@ namespace Teeny.Core.Parse.Rules.Statements
 {
     public class AssignmentStatementRule : StatementRule
     {
-        public AssignmentStatementRule(TokenRecord identifier, TokenRecord assignmentOperator,
-            ExpressionRule expression, TokenRecord semicolon)
+        public AssignmentStatementRule(TerminalNode identifier, TerminalNode assignmentOperator,
+                                       ExpressionRule expression, TerminalNode semicolon)
         {
-            Identifier.Assign(identifier);
-            AssignmentOperator.Assign(assignmentOperator);
+            Identifier = Guard.OneOf(() => identifier, Token.Identifier);
+            AssignmentOperator = Guard.OneOf(() => assignmentOperator, Token.Assignment);
             Expression = expression;
-            Semicolon.Assign(semicolon);
+            Semicolon = Guard.OneOf(() => semicolon, Token.Semicolon);
         }
 
         public AssignmentStatementRule()
         {
         }
 
-        public TerminalNode Identifier { get; set; } = new TerminalNode(Token.Identifier);
-        public TerminalNode AssignmentOperator { get; set; } = new TerminalNode(Token.Assignment);
+        public TerminalNode Identifier { get; set; }
+        public TerminalNode AssignmentOperator { get; set; }
         public ExpressionRule Expression { get; set; }
-        public TerminalNode Semicolon { get; set; } = new TerminalNode(Token.Semicolon);
+        public TerminalNode Semicolon { get; set; }
     }
 }

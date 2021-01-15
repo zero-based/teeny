@@ -8,7 +8,7 @@ namespace Teeny.Core.Parse.Rules
         public ProgramRule(ICollection<FunctionStatementRule> functionStatements, MainFunctionRule mainFunction)
         {
             FunctionStatements = functionStatements;
-            MainFunction = mainFunction;
+            MainFunction = Guard.NonNull(() => mainFunction);
         }
 
         public ProgramRule()

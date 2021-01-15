@@ -4,9 +4,9 @@ namespace Teeny.Core.Parse.Rules.Function.Arguments
 {
     public class ArgumentsRule : BaseRule
     {
-        public ArgumentsRule(TokenRecord argument, ExtraArgumentRule extraArgument)
+        public ArgumentsRule(TerminalNode argument, ExtraArgumentRule extraArgument)
         {
-            Argument.Assign(argument);
+            Argument = Guard.OneOf(() => argument, Token.Identifier, Token.ConstantString, Token.ConstantNumber);
             ExtraArgument = extraArgument;
         }
 
@@ -14,7 +14,7 @@ namespace Teeny.Core.Parse.Rules.Function.Arguments
         {
         }
 
-        public TerminalNode Argument { get; set; } = new TerminalNode(Token.Identifier, Token.ConstantString, Token.ConstantNumber);
+        public TerminalNode Argument { get; set; }
         public ExtraArgumentRule ExtraArgument { get; set; }
     }
 }

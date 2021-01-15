@@ -4,22 +4,22 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
 {
     public class DeclarationStatementRule : StatementRule
     {
-        public DeclarationStatementRule(TokenRecord dataType, IdOrAssignmentRule idOrAssignment,
-            ExtraIdOrAssignmentRule extraIdOrAssignment, TokenRecord semicolon)
+        public DeclarationStatementRule(TerminalNode dataType, IdOrAssignmentRule idOrAssignment,
+            ExtraIdOrAssignmentRule extraIdOrAssignment, TerminalNode semicolon)
         {
-            DataType.Assign(dataType);
-            IdOrAssignment = idOrAssignment;
+            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            IdOrAssignment = Guard.NonNull(() => idOrAssignment);
             ExtraIdOrAssignment = extraIdOrAssignment;
-            Semicolon.Assign(semicolon);
+            Semicolon = Guard.OneOf(() => semicolon, Token.Semicolon);
         }
 
         public DeclarationStatementRule()
         {
         }
 
-        public TerminalNode DataType { get; set; } = new TerminalNode(Token.Int, Token.Float, Token.String);
+        public TerminalNode DataType { get; set; }
         public IdOrAssignmentRule IdOrAssignment { get; set; }
         public ExtraIdOrAssignmentRule ExtraIdOrAssignment { get; set; }
-        public TerminalNode Semicolon { get; set; } = new TerminalNode(Token.Semicolon);
+        public TerminalNode Semicolon { get; set; }
     }
 }

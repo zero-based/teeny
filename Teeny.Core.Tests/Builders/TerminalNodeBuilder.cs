@@ -4,17 +4,14 @@ using Teeny.Core.Scan.Attributes;
 
 namespace Teeny.Core.Tests.Builders
 {
-    public class TerminalNodeBuilder
+    public static class TerminalNodeBuilder
     {
         public static TerminalNode Of(Token token)
         {
             return new TerminalNode
             {
-                TokenRecord = new TokenRecord
-                {
-                    Token = token,
-                    Lexeme = token.GetAttributeOfType<ConstantTokenAttribute>().ReservedWord
-                }
+                Token = token,
+                Lexeme = token.GetAttributeOfType<ConstantTokenAttribute>().ReservedWord
             };
         }
 
@@ -22,11 +19,8 @@ namespace Teeny.Core.Tests.Builders
         {
             return new TerminalNode
             {
-                TokenRecord = new TokenRecord
-                {
-                    Token = token,
-                    Lexeme = lexeme
-                }
+                Token = token,
+                Lexeme = lexeme
             };
         }
     }
