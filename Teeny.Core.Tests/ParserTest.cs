@@ -169,7 +169,11 @@ namespace Teeny.Core.Tests
             _parser.Parse(tokensTable);
 
             // Assert
-            _parser.ProgramRoot.ShouldDeepEqual(expectedProgram);
+            Assert.AreEqual(0, _parser.ErrorList.Count);
+            _parser.ProgramRoot.WithDeepEqual(expectedProgram)
+                .IgnoreProperty<Node>(n => n.Children)
+                .IgnoreProperty<Node>(n => n.Name)
+                .Assert();
         }
 
         [TestMethod]
@@ -268,8 +272,11 @@ namespace Teeny.Core.Tests
             _parser.Parse(tokensTable);
 
             // Assert
-            _parser.ProgramRoot.ShouldDeepEqual(expectedProgram);
             Assert.AreEqual(0, _parser.ErrorList.Count);
+            _parser.ProgramRoot.WithDeepEqual(expectedProgram)
+                .IgnoreProperty<Node>(n => n.Children)
+                .IgnoreProperty<Node>(n => n.Name)
+                .Assert();
         }
     }
 }
