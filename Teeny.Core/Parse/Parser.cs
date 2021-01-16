@@ -18,7 +18,7 @@ namespace Teeny.Core.Parse
 {
     public class Parser
     {
-        private ICollection<TokenRecord> _tokensList;
+        private List<TokenRecord> _tokensList;
         public List<string> ErrorList;
         public ProgramRule ProgramRoot;
         private TokenRecord CurrentRecord => _tokensList.First();
@@ -29,15 +29,15 @@ namespace Teeny.Core.Parse
             if (tokens.Contains(CurrentRecord.Token))
             {
                 var tokenRecord = CurrentRecord;
-                _tokensList.Remove(CurrentRecord);
+                _tokensList.RemoveAt(0);
                 return new TerminalNode(tokenRecord);
             }
 
             if (tokens.Contains(NextRecord.Token))
             {
-                _tokensList.Remove(CurrentRecord);
+                _tokensList.RemoveAt(0);
                 var tokenRecord = CurrentRecord;
-                _tokensList.Remove(CurrentRecord);
+                _tokensList.RemoveAt(0);
                 return new TerminalNode(tokenRecord);
             }
 
@@ -118,11 +118,11 @@ namespace Teeny.Core.Parse
         private FunctionBodyRule ParseFunctionBody()
         {
             var curlyBracketLeft = Match(Token.CurlyBracketLeft);
-            var statements = ParseStatements();
+            var statements = ParseStatements() ;
             var returnStatement = statements?.Last() is ReturnStatementRule s ? s : null;
             var curlyBracketRight = Match(Token.CurlyBracketRight);
 
-            if (statements?.Last() is ReturnStatementRule) statements.Remove(returnStatement);
+            if (statements?.Last() is ReturnStatementRule) statements.RemoveAt(statements.Count - 1);
             return Validate(new FunctionBodyRule(curlyBracketLeft, statements, returnStatement, curlyBracketRight));
         }
 
@@ -453,7 +453,7 @@ namespace Teeny.Core.Parse
             }
         }
 
-        private ICollection<StatementRule> ParseStatements()
+        private List<StatementRule> ParseStatements()
         {
             var statements = new List<StatementRule>();
 
