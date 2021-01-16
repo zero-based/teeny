@@ -12,8 +12,8 @@ namespace Teeny.Core.Scan
         [RegularState(@"[^\w\d\s]")] ScanningSymbol,
 
         // Stream States
-        [StreamState(@"./\*", @"\*/.")] ScanningComment,
-        [StreamState(@"."".", @".(""|\n).")] ScanningString,
+        [StreamState(@"(.|\s)/\*", @"\*/(.|\s)")] ScanningComment,
+        [StreamState(@"(.|\s)""(.|\s)", @"(.|\s)(""|\n)(.|\s)")] ScanningString,
 
         // Meta States
         ScanStarted,
