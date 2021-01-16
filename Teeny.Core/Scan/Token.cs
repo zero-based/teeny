@@ -53,8 +53,8 @@ namespace Teeny.Core.Scan
         [ConstantToken("(")] ParenthesisLeft,
         [ConstantToken(")")] ParenthesisRight,
 
-        [IgnoredToken] [PatternToken(@"^/\*(.|\s)*\*/$")] Comment,
-        [IgnoredToken] [PatternToken(@"^\s+")] Whitespace,
+        [IgnoredToken] [PatternToken(@"^/\*[\s\S]*\*/$")] Comment,
+        [IgnoredToken] [PatternToken(@"^\s+$")] Whitespace,
         [IgnoredToken] Unknown
     }
 }
