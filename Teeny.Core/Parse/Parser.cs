@@ -18,27 +18,26 @@ namespace Teeny.Core.Parse
 {
     public class Parser
     {
-        private Queue<TokenRecord> _tokensQueue;
-
+        private List<TokenRecord> _tokensList;
         public List<string> ErrorList;
         public ProgramRule ProgramRoot;
-        private TokenRecord CurrentRecord => _tokensQueue.Peek();
-        private TokenRecord NextRecord => _tokensQueue.ElementAt(1);
+        private TokenRecord CurrentRecord => _tokensList.First();
+        private TokenRecord NextRecord => _tokensList.ElementAt(1);
 
         private TerminalNode Match(params Token[] tokens)
         {
             if (tokens.Contains(CurrentRecord.Token))
             {
                 var tokenRecord = CurrentRecord;
-                _tokensQueue.Dequeue();
+                _tokensList.RemoveAt(0);
                 return new TerminalNode(tokenRecord);
             }
 
             if (tokens.Contains(NextRecord.Token))
             {
-                _tokensQueue.Dequeue();
+                _tokensList.RemoveAt(0);
                 var tokenRecord = CurrentRecord;
-                _tokensQueue.Dequeue();
+                _tokensList.RemoveAt(0);
                 return new TerminalNode(tokenRecord);
             }
 
@@ -63,7 +62,7 @@ namespace Teeny.Core.Parse
 
         public void Parse(List<TokenRecord> tokens)
         {
-            _tokensQueue = new Queue<TokenRecord>(tokens);
+            _tokensList = tokens;
             ErrorList = new List<string>();
 
             try
@@ -119,11 +118,11 @@ namespace Teeny.Core.Parse
         private FunctionBodyRule ParseFunctionBody()
         {
             var curlyBracketLeft = Match(Token.CurlyBracketLeft);
-            var statements = ParseStatements();
+            var statements = ParseStatements() ;
             var returnStatement = statements?.Last() is ReturnStatementRule s ? s : null;
             var curlyBracketRight = Match(Token.CurlyBracketRight);
 
-            if (statements?.Last() is ReturnStatementRule) statements.Remove(returnStatement);
+            if (statements?.Last() is ReturnStatementRule) statements.RemoveAt(statements.Count - 1);
             return Validate(new FunctionBodyRule(curlyBracketLeft, statements, returnStatement, curlyBracketRight));
         }
 
@@ -454,7 +453,7 @@ namespace Teeny.Core.Parse
             }
         }
 
-        private ICollection<StatementRule> ParseStatements()
+        private List<StatementRule> ParseStatements()
         {
             var statements = new List<StatementRule>();
 
