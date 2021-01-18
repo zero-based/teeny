@@ -9,7 +9,7 @@ namespace Teeny.Core.Parse.Rules.Function
             TerminalNode leftParenthesis, ParametersRule parameters,
             TerminalNode rightParenthesis)
         {
-            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            DataType = Guard.OneOf(() => dataType, TokensGroups.DataTypes);
             FunctionName = Guard.OneOf(() => functionName, Token.Identifier);
             LeftParenthesis = Guard.OneOf(() => leftParenthesis, Token.ParenthesisLeft);
             Parameters = parameters;

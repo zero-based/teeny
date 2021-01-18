@@ -6,7 +6,7 @@ namespace Teeny.Core.Parse.Rules.Function.Arguments
     {
         public ArgumentsRule(TerminalNode argument, ExtraArgumentRule extraArgument)
         {
-            Argument = Guard.OneOf(() => argument, Token.Identifier, Token.ConstantString, Token.ConstantNumber);
+            Argument = Guard.OneOf(() => argument, TokensGroups.Arguments);
             ExtraArgument = extraArgument;
         }
 

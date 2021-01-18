@@ -6,7 +6,7 @@ namespace Teeny.Core.Parse.Rules.Common
     {
         public SignRule(TerminalNode sign)
         {
-            Sign = Guard.OneOf(() => sign, Token.Plus, Token.Minus);
+            Sign = Guard.OneOf(() => sign, TokensGroups.Signs);
         }
 
         public SignRule()

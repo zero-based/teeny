@@ -6,7 +6,7 @@ namespace Teeny.Core.Parse.Rules.Function.Parameters
     {
         public ParameterRule(TerminalNode dataType, TerminalNode identifier)
         {
-            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            DataType = Guard.OneOf(() => dataType, TokensGroups.DataTypes);
             Identifier = Guard.OneOf(() => identifier, Token.Identifier);
         }
 
