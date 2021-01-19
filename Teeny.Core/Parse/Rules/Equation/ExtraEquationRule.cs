@@ -7,7 +7,7 @@ namespace Teeny.Core.Parse.Rules.Equation
         public ExtraEquationRule(TerminalNode arithmeticOperator, EquationRule equation,
             ExtraEquationRule extraEquation)
         {
-            ArithmeticOperator = Guard.OneOf(() => arithmeticOperator, Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
+            ArithmeticOperator = Guard.OneOf(() => arithmeticOperator, TokensGroups.ArithmeticOperators);
             Equation = Guard.NonNull(() => equation);
             ExtraEquation = extraEquation;
         }

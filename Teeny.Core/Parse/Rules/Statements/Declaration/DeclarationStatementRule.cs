@@ -7,7 +7,7 @@ namespace Teeny.Core.Parse.Rules.Statements.Declaration
         public DeclarationStatementRule(TerminalNode dataType, IdOrAssignmentRule idOrAssignment,
             ExtraIdOrAssignmentRule extraIdOrAssignment, TerminalNode semicolon)
         {
-            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            DataType = Guard.OneOf(() => dataType, TokensGroups.DataTypes);
             IdOrAssignment = Guard.NonNull(() => idOrAssignment);
             ExtraIdOrAssignment = extraIdOrAssignment;
             Semicolon = Guard.OneOf(() => semicolon, Token.Semicolon);

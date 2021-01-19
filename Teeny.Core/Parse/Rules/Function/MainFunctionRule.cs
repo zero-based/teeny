@@ -8,7 +8,7 @@ namespace Teeny.Core.Parse.Rules.Function
             TerminalNode leftParenthesis, TerminalNode rightParenthesis,
             FunctionBodyRule functionBody)
         {
-            DataType = Guard.OneOf(() => dataType, Token.Int, Token.Float, Token.String);
+            DataType = Guard.OneOf(() => dataType, TokensGroups.DataTypes);
             Main = Guard.OneOf(() => main, Token.Main);
             LeftParenthesis = Guard.OneOf(() => leftParenthesis, Token.ParenthesisLeft);
             RightParenthesis = Guard.OneOf(() => rightParenthesis, Token.ParenthesisRight);

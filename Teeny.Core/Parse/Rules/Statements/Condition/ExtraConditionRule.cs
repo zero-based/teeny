@@ -7,7 +7,7 @@ namespace Teeny.Core.Parse.Rules.Statements.Condition
         public ExtraConditionRule(TerminalNode booleanOperator, ConditionRule condition,
             ExtraConditionRule extraCondition)
         {
-            BooleanOperator = Guard.OneOf(() => booleanOperator, Token.And, Token.Or);
+            BooleanOperator = Guard.OneOf(() => booleanOperator, TokensGroups.BooleanOperators);
             Condition = Guard.NonNull(() => condition);
             ExtraCondition = extraCondition;
         }

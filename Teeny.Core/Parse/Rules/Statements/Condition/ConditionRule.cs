@@ -8,7 +8,7 @@ namespace Teeny.Core.Parse.Rules.Statements.Condition
         public ConditionRule(TerminalNode identifier, TerminalNode conditionOperator, TermRule term)
         {
             Identifier = Guard.OneOf(() => identifier, Token.Identifier);
-            ConditionOperator = Guard.OneOf(() => conditionOperator, Token.LessThan, Token.GreaterThan, Token.Equal, Token.NotEqual);
+            ConditionOperator = Guard.OneOf(() => conditionOperator, TokensGroups.ConditionOperators);
             Term = Guard.NonNull(() => term);
         }
 

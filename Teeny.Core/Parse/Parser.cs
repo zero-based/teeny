@@ -78,8 +78,7 @@ namespace Teeny.Core.Parse
 
         private TermRule ParseTerm()
         {
-            if (CurrentRecord.Token == Token.Plus ||
-                CurrentRecord.Token == Token.Minus ||
+            if (TokensGroups.Signs.Contains(CurrentRecord.Token) || 
                 CurrentRecord.Token == Token.ConstantNumber)
             {
                 var number = ParseNumber();
@@ -98,7 +97,7 @@ namespace Teeny.Core.Parse
 
         private NumberRule ParseNumber()
         {
-            if (CurrentRecord.Token == Token.Plus || CurrentRecord.Token == Token.Minus)
+            if (TokensGroups.Signs.Contains(CurrentRecord.Token))
             {
                 var sign = ParseSign();
                 var number = Match(Token.ConstantNumber);
@@ -111,7 +110,7 @@ namespace Teeny.Core.Parse
 
         private SignRule ParseSign()
         {
-            var sign = Match(Token.Plus, Token.Minus);
+            var sign = Match(TokensGroups.Signs);
             return Validate(new SignRule(sign));
         }
 
@@ -137,12 +136,9 @@ namespace Teeny.Core.Parse
 
         private ArgumentsRule ParseArgumentsRule()
         {
-            if (CurrentRecord.Token != Token.Identifier
-                && CurrentRecord.Token != Token.ConstantString
-                && CurrentRecord.Token != Token.ConstantNumber)
-                return null;
+            if (!TokensGroups.Arguments.Contains(CurrentRecord.Token)) return null;
 
-            var argument = Match(Token.Identifier, Token.ConstantString, Token.ConstantNumber);
+            var argument = Match(TokensGroups.Arguments);
             var extraArgument = ParseExtraArgument();
 
             return Validate(new ArgumentsRule(argument, extraArgument));
@@ -198,7 +194,7 @@ namespace Teeny.Core.Parse
 
         private ParameterRule ParseParameter()
         {
-            var dataType = Match(Token.Int, Token.Float, Token.String);
+            var dataType = Match(TokensGroups.DataTypes);
             var identifier = Match(Token.Identifier);
 
             return Validate(new ParameterRule(dataType, identifier));
@@ -206,10 +202,7 @@ namespace Teeny.Core.Parse
 
         private ParametersRule ParseParameters()
         {
-            if (CurrentRecord.Token != Token.Int
-                && CurrentRecord.Token != Token.Float
-                && CurrentRecord.Token != Token.String)
-                return null;
+            if (!TokensGroups.DataTypes.Contains(CurrentRecord.Token)) return null;
 
             var parameter = ParseParameter();
             var extraParameter = ParseExtraParameter();
@@ -230,7 +223,7 @@ namespace Teeny.Core.Parse
         private ConditionRule ParseCondition()
         {
             var identifier = Match(Token.Identifier);
-            var conditionOperator = Match(Token.LessThan, Token.GreaterThan, Token.Equal, Token.NotEqual);
+            var conditionOperator = Match(TokensGroups.ConditionOperators);
             var term = ParseTerm();
 
             return Validate(new ConditionRule(identifier, conditionOperator, term));
@@ -238,11 +231,9 @@ namespace Teeny.Core.Parse
 
         private ExtraConditionRule ParseExtraCondition()
         {
-            if (CurrentRecord.Token != Token.And &&
-                CurrentRecord.Token != Token.Or)
-                return null;
+            if (!TokensGroups.BooleanOperators.Contains(CurrentRecord.Token)) return null;
 
-            var booleanOperator = Match(Token.And, Token.Or);
+            var booleanOperator = Match(TokensGroups.BooleanOperators);
             var condition = ParseCondition();
             var extraCondition = ParseExtraCondition();
 
@@ -286,7 +277,7 @@ namespace Teeny.Core.Parse
 
         private DeclarationStatementRule ParseDeclarationStatement()
         {
-            var dataType = Match(Token.Int, Token.Float, Token.String);
+            var dataType = Match(TokensGroups.DataTypes);
             var idOrAssignment = ParseIdOrAssignment();
             var extraIdOrAssign = ParseExtraIdOrAssignment();
             var semicolon = Match(Token.Semicolon);
@@ -381,11 +372,8 @@ namespace Teeny.Core.Parse
                 return Validate(new ExpressionRule(@string));
             }
 
-            if (CurrentRecord.Token == Token.ParenthesisLeft
-                || NextRecord.Token == Token.Plus
-                || NextRecord.Token == Token.Minus
-                || NextRecord.Token == Token.Multiply
-                || NextRecord.Token == Token.Divide)
+            if (CurrentRecord.Token == Token.ParenthesisLeft || 
+                TokensGroups.ArithmeticOperators.Contains(NextRecord.Token))
             {
                 var equation = ParseEquation();
                 return Validate(new ExpressionRule(equation));
@@ -414,13 +402,9 @@ namespace Teeny.Core.Parse
 
         private ExtraEquationRule ParseExtraEquation()
         {
-            // TODO: Create tokens groups to reuse
-            if (CurrentRecord.Token != Token.Plus
-                && CurrentRecord.Token != Token.Minus
-                && CurrentRecord.Token != Token.Multiply
-                && CurrentRecord.Token != Token.Divide) return null;
+            if (!TokensGroups.ArithmeticOperators.Contains(CurrentRecord.Token)) return null;
 
-            var arithmeticOperator = Match(Token.Plus, Token.Minus, Token.Multiply, Token.Divide);
+            var arithmeticOperator = Match(TokensGroups.ArithmeticOperators);
             var equation = ParseEquation();
             var extraEquation = ParseExtraEquation();
 
@@ -491,7 +475,7 @@ namespace Teeny.Core.Parse
 
         private FunctionDeclarationRule ParseFunctionDeclaration()
         {
-            var dataType = Match(Token.Int, Token.Float, Token.String);
+            var dataType = Match(TokensGroups.DataTypes);
             var functionName = Match(Token.Identifier);
             var leftParenthesis = Match(Token.ParenthesisLeft);
             var parameters = ParseParameters();
